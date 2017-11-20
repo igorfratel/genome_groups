@@ -16,7 +16,6 @@ std::string homology_detection(char *format_file, char *method);
  *The similarities file must be in the format "prot1 prot2 sim" in every line
  *num_prot must be the number of proteins and stringency is the minimum similarity
  *for two proteins to be considered part of the same cluster*/
-std::vector<std::vector<std::string>> protein_clustering(char* prot_sim_file, int num_prot,
-                                                         double stringency);
+UndirectedEdgeWeightedGraph<std::string> protein_clustering(char* prot_sim_file, int num_prot);
 
 #endif

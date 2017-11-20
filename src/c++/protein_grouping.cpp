@@ -17,8 +17,7 @@ std::string homology_detection(char *format_file, char *method) {
 }
 
 
-std::vector<std::vector<std::string>> protein_clustering(char* prot_sim_file, int num_prot,
-                                                         double stringency) {
+UndirectedEdgeWeightedGraph<std::string> protein_clustering(char* prot_sim_file, int num_prot) {
     /*Receives the protein similarities file and stores them in a list of clusters.
     /*The similarities file must be in the format "prot1 prot2 sim" in every line
     /*num_prot must be the number of proteins and stringency is the minimum similarity
@@ -42,7 +41,5 @@ std::vector<std::vector<std::string>> protein_clustering(char* prot_sim_file, in
         my_graph.add_edge(prot1, prot2, weight_aux);
     }
     file.close();
-
-    components = my_graph.connected_components(stringency);
-    return components;
+    return my_graph;
 }
