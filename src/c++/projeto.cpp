@@ -33,10 +33,10 @@ int main(int argc, char *argv[]) {
 			stringency = atof(argv[5]);
 			genome_clustering_method = argv[6];
 
-			std::cout << "Clustering proteins...\n";
+			std::cout << "\nClustering proteins...\n";
 			prot_clusters = protein_clustering(prot_sim_file, num_prot, stringency);
 
-			std::cout << "Protein clusters: \n";
+			std::cout << "\nProtein clusters: \n";
 			for (unsigned int i = 0; i < prot_clusters.size(); i++) {
 				std::cout << "[";
 				for (unsigned int j = 0; j < prot_clusters[i].size(); j++) {
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
 				std::cout << "]\n";
 			}
 
-			std::cout << "Clustering genomic neighborhoods...\n";
+			std::cout << "\nClustering genomic neighborhoods...\n";
 			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method);
 			break;
 

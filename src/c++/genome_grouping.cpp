@@ -1,11 +1,11 @@
 #include "genome_grouping.h"
 
-void genome_clustering(char* neighborhoods_file, std::vector<std::vector<std::string>> clusters,
+void genome_clustering(char* neighborhoods_file, std::vector<std::vector<std::string>> &clusters,
                        char* method) {
     /*Receives a file containing all the genomic neighborhoods (as output by parse_neighborhood.py),
      *a vector of protein clusters and the desired genomic neighborhood clustering method.*/
     /*INCOMPLETE*/
-
+    std::cout.precision(2);
     std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_file);
     for (int i = 0; i < neighborhoods.size(); i++) {
         std::cout << neighborhoods[i].get_accession() << " " << neighborhoods[i].get_organism() <<
@@ -14,6 +14,7 @@ void genome_clustering(char* neighborhoods_file, std::vector<std::vector<std::st
             std::cout << it->pid << " " << it->locus << " " << it->cds << "\n";
         }
     }
+    std::cout << "\n";
     std::string method_aux = method;
     double score;
     if (method_aux == "simple") {
@@ -23,78 +24,10 @@ void genome_clustering(char* neighborhoods_file, std::vector<std::vector<std::st
                 std::cout <<"Score between (" << neighborhoods[m].get_accession() << ", " <<
                             neighborhoods[m].get_organism() << ") and " << "(" <<
                             neighborhoods[n].get_accession() << ", " <<
-                            neighborhoods[n].get_organism() << "): " << score << "\n";
+                            neighborhoods[n].get_organism() << "): " << score << "\n\n";
             }
         }
     }
-}
-
-double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood g2,
-                             std::vector<std::vector<std::string>>& clusters) {
-    /*Receives two genomic neighborhoods and a vector of clusters.
-     *Returns the MWM porthodom score between the two neighborhoods
-     *(Using the hungarian algorithm and the porthodom scoring formula).*/
-
-    double sum_temp = 0;
-    std::map<std::pair<int, int>, int> assignments;
-    std::vector<std::vector<int>> matrix = fill_assignment_matrix(g1, g2, clusters);
-    Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
-
-    my_hungarian.solve();
-    assignments = my_hungarian.get_assignments();
-    std::cout <<"Assignments between (" << g1.get_accession() << ", " << g1.get_organism() << ") and "
-    << "(" << g2.get_accession() << ", " << g2.get_organism() << "):\n";
-    my_hungarian.print_assignment();
-    my_hungarian.print_cost();
-    fprintf(stderr, "\n");
-    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
-        sum_temp += it->second;
-    return sum_temp/std::max(g1.protein_count(), g2.protein_count());
-}
-
-std::vector<std::vector<int>> fill_assignment_matrix(GenomicNeighborhood g1, GenomicNeighborhood g2,
-                                                     std::vector<std::vector<std::string>>& clusters) {
-    /*Receives two genomic neighborhoods and a vector of clusters.
-     *Fills an integer matrix where matrix[i][j] is 1 if the i-th protein of g1 and the j-th protein
-     *of g2 are in the same cluster and 0 otherwise.*/
-
-    int i = 0;
-    int j = 0;
-    std::vector<std::vector<int>> matrix;
-
-    matrix.resize(g1.protein_count());
-    for (unsigned int k = 0; k < matrix.size(); k++)
-        matrix[k].resize(g2.protein_count());
-
-    for(GenomicNeighborhood::iterator it = g1.begin(); it != g1.end(); ++it) {
-        j = 0;
-        for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
-            std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << "\n";
-            matrix[i][j] = is_grouped(*it, *it2, clusters);
-            j++;
-        }
-        i++;
-    }
-    return matrix;
-}
-
-int is_grouped(protein_info_t my_prot, protein_info_t my_prot2,
-               std::vector<std::vector<std::string>>& clusters) {
-    /*Receives two proteins and a vector of clusters.
-    /*Returns 1 if it finds both proteins in the same cluster and 0 otherwise.*/
-
-    int flag1 = 0;
-    int flag2 = 0;
-    for (unsigned int k = 0; k < clusters.size(); k++) {
-        for (unsigned int l = 0; l < clusters[k].size(); l++) {
-            if (clusters[k][l] == my_prot.pid) flag1 = 1;
-            if (clusters[k][l] == my_prot2.pid) flag2 = 1;
-        }
-        if (flag1 == 1 && flag2 == 1) return 1;
-        flag1 = 0;
-        flag2 = 0;
-    }
-    return 0;
 }
 
 std::vector<GenomicNeighborhood> parse_neighborhoods(char* neighborhoods_file) {
@@ -147,4 +80,77 @@ std::vector<GenomicNeighborhood> parse_neighborhoods(char* neighborhoods_file) {
         }
         file.close();
     return neighborhoods;
+}
+
+double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood g2,
+                             std::vector<std::vector<std::string>> &clusters) {
+    /*Receives two genomic neighborhoods and a vector of clusters.
+     *Returns the MWM porthodom score between the two neighborhoods
+     *(Using the hungarian algorithm and the porthodom scoring formula).*/
+
+    double sum_temp = 0;
+    std::map<std::pair<int, int>, int> assignments;
+    std::vector<std::vector<int>> matrix = fill_assignment_matrix(g1, g2, clusters);
+    Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
+
+    my_hungarian.solve();
+    assignments = my_hungarian.get_assignments();
+    std::cout <<"Assignments between (" << g1.get_accession() << ", " << g1.get_organism() << ") and "
+    << "(" << g2.get_accession() << ", " << g2.get_organism() << "):\n";
+    my_hungarian.print_assignment();
+    my_hungarian.print_cost();
+    fprintf(stderr, "\n");
+    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
+        sum_temp += it->second;
+        std::cout << "SUM_TEMP: " << sum_temp << "\n";
+    return sum_temp/std::max(g1.protein_count(), g2.protein_count());
+}
+
+std::vector<std::vector<int>> fill_assignment_matrix(GenomicNeighborhood g1, GenomicNeighborhood g2,
+                                                     std::vector<std::vector<std::string>> &clusters) {
+    /*Receives two genomic neighborhoods and a vector of clusters.
+     *Fills an integer matrix where matrix[i][j] is 1 if the i-th protein of g1 and the j-th protein
+     *of g2 are in the same cluster and 0 otherwise.*/
+
+    int i = 0;
+    int j = 0;
+    std::vector<std::vector<int>> matrix;
+
+    matrix.resize(g1.protein_count());
+    for (unsigned int k = 0; k < matrix.size(); k++)
+        matrix[k].resize(g2.protein_count());
+
+    for(GenomicNeighborhood::iterator it = g1.begin(); it != g1.end(); ++it) {
+        j = 0;
+        for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
+            matrix[i][j] = is_grouped(*it, *it2, clusters);
+            std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
+            j++;
+        }
+        i++;
+    }
+    return matrix;
+}
+
+int is_grouped(protein_info_t my_prot, protein_info_t my_prot2,
+               std::vector<std::vector<std::string>> &clusters) {
+    /*Receives two proteins and a vector of clusters.
+    /*Returns 1 if it finds both proteins in the same cluster and 0 otherwise.*/
+
+    int flag1;
+    int flag2;
+    for (unsigned int k = 0; k < clusters.size(); k++) {
+        flag1 = 0;
+        flag2 = 0;
+        for (unsigned int l = 0; l < clusters[k].size(); l++) {
+            if (clusters[k][l] == my_prot.pid)
+                flag1 = 1;
+                if (flag2 == 1) break;
+            if (clusters[k][l] == my_prot2.pid)
+                flag2 = 1;
+                if(flag1 == 1) break;
+        }
+        if (flag1 == 1 && flag2 == 1) return 1;
+    }
+    return 0;
 }

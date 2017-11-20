@@ -1,9 +1,4 @@
-Transformar o UndirectedEdgeWeightedGraph em um template pra poder usar com as vizinhanças
-
-Usar tabelas associando strings à inteiros, ao invés de usar as strings diretamente
-
-Passar por referência p n fazer cópia
-
+Utilizar Union Find ao invés de matriz
 
 COMO EXECUTAR:
 
