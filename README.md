@@ -1,5 +1,3 @@
-Utilizar Union Find ao invés de matriz
-
 COMO EXECUTAR:
 
 - 1: ./make
