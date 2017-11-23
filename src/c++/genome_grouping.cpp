@@ -1,7 +1,7 @@
 #include "genome_grouping.h"
 
-void genome_clustering(char* neighborhoods_file, std::vector<std::vector<std::string>> &clusters,
-                       char* method) {
+void genome_clustering(char* neighborhoods_file, UndirectedEdgeWeightedGraph<std::string> &clusters,
+                       char* method, double stringency) {
     /*Receives a file containing all the genomic neighborhoods (as output by parse_neighborhood.py),
      *a vector of protein clusters and the desired genomic neighborhood clustering method.*/
     /*INCOMPLETE*/
@@ -20,7 +20,7 @@ void genome_clustering(char* neighborhoods_file, std::vector<std::vector<std::st
     if (method_aux == "simple") {
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m; n < neighborhoods.size(); n++) {
-                score = compare_neighborhoods(neighborhoods[m], neighborhoods[n], clusters);
+                score = compare_neighborhoods(neighborhoods[m], neighborhoods[n], clusters, stringency);
                 std::cout <<"Score between (" << neighborhoods[m].get_accession() << ", " <<
                             neighborhoods[m].get_organism() << ") and " << "(" <<
                             neighborhoods[n].get_accession() << ", " <<
@@ -83,14 +83,14 @@ std::vector<GenomicNeighborhood> parse_neighborhoods(char* neighborhoods_file) {
 }
 
 double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood g2,
-                             std::vector<std::vector<std::string>> &clusters) {
+                             UndirectedEdgeWeightedGraph<std::string> &clusters, double stringency) {
     /*Receives two genomic neighborhoods and a vector of clusters.
      *Returns the MWM porthodom score between the two neighborhoods
      *(Using the hungarian algorithm and the porthodom scoring formula).*/
 
     double sum_temp = 0;
     std::map<std::pair<int, int>, int> assignments;
-    std::vector<std::vector<int>> matrix = fill_assignment_matrix(g1, g2, clusters);
+    std::vector<std::vector<int>> matrix = fill_assignment_matrix(g1, g2, clusters, stringency);
     Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
 
     my_hungarian.solve();
@@ -107,7 +107,8 @@ double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood g2,
 }
 
 std::vector<std::vector<int>> fill_assignment_matrix(GenomicNeighborhood g1, GenomicNeighborhood g2,
-                                                     std::vector<std::vector<std::string>> &clusters) {
+                                                     UndirectedEdgeWeightedGraph<std::string> &clusters,
+                                                     double stringency) {
     /*Receives two genomic neighborhoods and a vector of clusters.
      *Fills an integer matrix where matrix[i][j] is 1 if the i-th protein of g1 and the j-th protein
      *of g2 are in the same cluster and 0 otherwise.*/
@@ -123,7 +124,7 @@ std::vector<std::vector<int>> fill_assignment_matrix(GenomicNeighborhood g1, Gen
     for(GenomicNeighborhood::iterator it = g1.begin(); it != g1.end(); ++it) {
         j = 0;
         for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
-            matrix[i][j] = is_grouped(*it, *it2, clusters);
+            matrix[i][j] = is_grouped(*it, *it2, clusters, stringency);
             std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
             j++;
         }
@@ -133,24 +134,12 @@ std::vector<std::vector<int>> fill_assignment_matrix(GenomicNeighborhood g1, Gen
 }
 
 int is_grouped(protein_info_t my_prot, protein_info_t my_prot2,
-               std::vector<std::vector<std::string>> &clusters) {
+               UndirectedEdgeWeightedGraph<std::string> &clusters, double stringency) {
     /*Receives two proteins and a vector of clusters.
     /*Returns 1 if it finds both proteins in the same cluster and 0 otherwise.*/
-
-    int flag1;
-    int flag2;
-    for (unsigned int k = 0; k < clusters.size(); k++) {
-        flag1 = 0;
-        flag2 = 0;
-        for (unsigned int l = 0; l < clusters[k].size(); l++) {
-            if (clusters[k][l] == my_prot.pid)
-                flag1 = 1;
-                if (flag2 == 1) break;
-            if (clusters[k][l] == my_prot2.pid)
-                flag2 = 1;
-                if(flag1 == 1) break;
-        }
-        if (flag1 == 1 && flag2 == 1) return 1;
+    if (clusters.is_connected(my_prot.pid, my_prot2.pid)){
+        if(clusters.get_edge_weight(my_prot.pid, my_prot2.pid) >= stringency)
+            return 1;
+        else return 0;
     }
-    return 0;
 }

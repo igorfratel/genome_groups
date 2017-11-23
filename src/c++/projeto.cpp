@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 	char *genome_clustering_method;
 	char *prot_sim_file;
 	std::string prot_sim_file_aux;
-	std::vector<std::vector<std::string>> prot_clusters;
+	UndirectedEdgeWeightedGraph<std::string> prot_clusters;
 	int num_prot;
 	double stringency;
 
@@ -34,20 +34,10 @@ int main(int argc, char *argv[]) {
 			genome_clustering_method = argv[6];
 
 			std::cout << "\nClustering proteins...\n";
-			prot_clusters = protein_clustering(prot_sim_file, num_prot, stringency);
-
-			std::cout << "\nProtein clusters: \n";
-			for (unsigned int i = 0; i < prot_clusters.size(); i++) {
-				std::cout << "[";
-				for (unsigned int j = 0; j < prot_clusters[i].size(); j++) {
-					if (j == prot_clusters[i].size() - 1) std::cout << prot_clusters[i][j];
-					else std::cout << prot_clusters[i][j] << ", ";
-				}
-				std::cout << "]\n";
-			}
+			prot_clusters = protein_clustering(prot_sim_file, num_prot);
 
 			std::cout << "\nClustering genomic neighborhoods...\n";
-			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method);
+			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method, stringency);
 			break;
 
 		case 2:
@@ -67,19 +57,10 @@ int main(int argc, char *argv[]) {
 			std::strcpy(prot_sim_file, prot_sim_file_aux.c_str());
 
 			std::cout << "Clustering proteins...\n";
-			prot_clusters = protein_clustering(prot_sim_file, num_prot, stringency);
-			std::cout << "Protein clusters: \n";
-			for (unsigned int i = 0; i < prot_clusters.size(); i++) {
-				std::cout << "[";
-				for (unsigned int j = 0; j < prot_clusters[i].size(); j++) {
-					if (j == prot_clusters[i].size() - 1) std::cout << prot_clusters[i][j];
-					else std::cout << prot_clusters[i][j] << ", ";
-				}
-				std::cout << "]\n";
-			}
+			prot_clusters = protein_clustering(prot_sim_file, num_prot);
 
 			std::cout << "Clustering genomic neighborhoods...\n";
-			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method);
+			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method, stringency);
 			break;
 	}
 }
