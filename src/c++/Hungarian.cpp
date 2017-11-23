@@ -36,7 +36,7 @@ Hungarian::Hungarian()
 	m_assignment.resize(m_rows, vector<int>(m_cols,0));
 }
 
-Hungarian::Hungarian(const vector<vector<int>>& input_matrix, int rows, int cols, MODE mode)
+Hungarian::Hungarian(const vector<vector<int> >& input_matrix, int rows, int cols, MODE mode)
 {
   int i,j, org_cols, org_rows;
   int max_cost;
@@ -104,7 +104,7 @@ std::map<std::pair<int, int>,int> Hungarian::get_assignments() {
 	return assignment;
 }
 
-void hungarian_print_matrix(const vector<vector<int>>& C, int rows, int cols) 
+void hungarian_print_matrix(const vector<vector<int> >& C, int rows, int cols) 
 {
 	int i,j;
 	fprintf(stderr , "\n");
@@ -139,7 +139,7 @@ void Hungarian::print_status()
   
 }
 
-int Hungarian::init(const vector<vector<int>>& input_matrix, int rows, int cols, MODE mode) 
+int Hungarian::init(const vector<vector<int> >& input_matrix, int rows, int cols, MODE mode) 
 {
 
   int i,j, org_cols, org_rows;
@@ -587,7 +587,7 @@ int Hungarian::cost() const
 	return m_cost;
 }
 
-const vector<vector<int>>& Hungarian::assignment() const
+const vector<vector<int> >& Hungarian::assignment() const
 {
 	return m_assignment;
 }

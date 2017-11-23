@@ -24,14 +24,13 @@ class GenomicNeighborhood {
 	public:
 		typedef std::vector<protein_info_t>::iterator iterator;
 		
-		/*Receives the name and acession code of the genomic neighborhood. Creates a new object.*/
-		GenomicNeighborhood (std::string, std::string);
+		GenomicNeighborhood (std::string acession_code, std::string organism_name);
 		
 		/*Receives the locus, pid and cds of the anchor/seed protein and adds that info to the object*/
-		void set_seed(std::string, std::string, std::string);
+		void set_seed(std::string locus, std::string pid, std::string cds);
 		
 		/*Receives the locus, pid and cds of a protein and adds the protein to the object*/
-		void add_protein(std::string, std::string, std::string);
+		void add_protein(std::string locus, std::string pid, std::string cds);
 		
 		/*Returns genomic neighborhood accession code*/
 		std::string get_accession();
@@ -45,6 +44,7 @@ class GenomicNeighborhood {
 		/*Returns number of proteins in the genomic neighborhood*/
 		int protein_count();
 		
+		/*Iterator for protein_info_t types, in the order that they were inserted in the object*/
 		iterator begin();
 		
 		iterator end();

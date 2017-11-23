@@ -2,10 +2,9 @@
 
 typedef std::vector<protein_info_t>::iterator iterator;
 
-GenomicNeighborhood::GenomicNeighborhood (std::string accession, std::string organism) {
-	/*Receives the name and acession code of the genomic neighborhood. Creates a new object.*/
-	this->accession = accession;
-	this->organism = organism;
+GenomicNeighborhood::GenomicNeighborhood (std::string accession_code, std::string organism_name) {
+	this->accession = accession_code;
+	this->organism = organism_name;
 }
 
 void GenomicNeighborhood::set_seed(std::string locus, std::string pid, std::string cds) {

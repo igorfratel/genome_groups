@@ -20,7 +20,8 @@
  ********************************************************************
  ********************************************************************/
 
-#include <iostream>
+#include <stdio.h>
+#include <limits>
 #include <vector>
 #include <map>
 
@@ -49,9 +50,9 @@ public:
 	 *  It returns the size of the quadratic(!) assignment matrix. **/
 
 	Hungarian();
-	Hungarian(const vector<vector<int>>&, int, int, MODE);
+	Hungarian(const vector<vector<int> >&, int, int, MODE);
 
-	int init(const vector<vector<int>>& input_matrix, 
+	int init(const vector<vector<int> >& input_matrix, 
 			   int rows, 
 			   int cols, 
 			   MODE mode);
@@ -63,7 +64,7 @@ public:
 	int cost() const;
 
 	/** Reference accessor for assignment **/
-	const vector<vector<int>>& assignment() const;
+	const vector<vector<int> >& assignment() const;
 
 	/** Returns matriz with the assignments **/
 	std::map<std::pair<int, int>,int> get_assignments();
@@ -86,9 +87,9 @@ private:
 	int m_cost;
 	int m_rows;
 	int m_cols;
-	vector<vector<int>> m_costmatrix_aux; /*Igor: cost matrix as received by the input. Not modified throughout the execution (that is not true for m_costmatrix)*/
-	vector<vector<int>> m_costmatrix;
-	vector<vector<int>> m_assignment;   
+	vector<vector<int> > m_costmatrix_aux; /*Igor: cost matrix as received by the input. Not modified throughout the execution (that is not true for m_costmatrix)*/
+	vector<vector<int> > m_costmatrix;
+	vector<vector<int> > m_assignment;   
 
 };
 
