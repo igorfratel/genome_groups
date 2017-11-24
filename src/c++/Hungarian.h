@@ -6,16 +6,16 @@
  ** O(n^3) implementation derived from libhungarian by Cyrill Stachniss, 2004
  **
  **
- ** Solving the Minimum Assignment Problem using the 
+ ** Solving the Minimum Assignment Problem using the
  ** Hungarian Method.
  **
  ** ** This file may be freely copied and distributed! **
  **
  **
  ** This file is distributed in the hope that it will be useful,
- ** but WITHOUT ANY WARRANTY; without even the implied 
+ ** but WITHOUT ANY WARRANTY; without even the implied
  ** warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- ** PURPOSE.  
+ ** PURPOSE.
  **
  ********************************************************************
  ********************************************************************/
@@ -45,16 +45,16 @@ class Hungarian
 {
 
 public:
-	/** This method initialize the hungarian_problem structure and init 
+	/** This method initialize the hungarian_problem structure and init
 	 *  the  cost matrices (missing lines or columns are filled with 0).
 	 *  It returns the size of the quadratic(!) assignment matrix. **/
 
 	Hungarian();
 	Hungarian(const vector<vector<int> >&, int, int, MODE);
 
-	int init(const vector<vector<int> >& input_matrix, 
-			   int rows, 
-			   int cols, 
+	int init(const vector<vector<int> >& input_matrix,
+			   int rows,
+			   int cols,
 			   MODE mode);
 
 	/** This method computes the optimal assignment. **/
@@ -89,11 +89,8 @@ private:
 	int m_cols;
 	vector<vector<int> > m_costmatrix_aux; /*Igor: cost matrix as received by the input. Not modified throughout the execution (that is not true for m_costmatrix)*/
 	vector<vector<int> > m_costmatrix;
-	vector<vector<int> > m_assignment;   
+	vector<vector<int> > m_assignment;
 
 };
 
 #endif
-
-
-

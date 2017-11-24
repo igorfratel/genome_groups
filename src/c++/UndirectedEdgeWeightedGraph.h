@@ -36,9 +36,10 @@ class UndirectedEdgeWeightedGraph {
 		void add_connected_nodes(T node1, T node2, double weight);
 
 		/*Returns 1 if given nodes are directly connected and 0 otherwise*/
-		int is_connected(T node1, T node2);
+		int are_connected(T node1, T node2);
 
-		/*Returns weight of the edge connecting two existing and directly connected nodes*/
+		/*Returns weight of the edge connecting two existing and directly connected nodes.
+		 *If not connected, returns 0.0*/
 		double get_edge_weight(T node1, T node2);
 
 		/*Returns number of nodes in graph*/

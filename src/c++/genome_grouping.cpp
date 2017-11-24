@@ -51,29 +51,30 @@ static std::vector<GenomicNeighborhood> parse_neighborhoods(std::string neighbor
         file.close();
     return neighborhoods;
 }
-static inline double clustering_value(protein_info_t my_prot, protein_info_t my_prot2,
+static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2,
                UndirectedEdgeWeightedGraph<std::string> &clusters, double stringency) {
-  //helper function to get a value of a connection graph if it is higher than
-  //the clustering threshold
-  //*remember to change gete_edge_weigh to retunr zero if not connected
+  /*Receives two proteins, a graph and a threshold value.
+   *If the proteins are connected in the graph, return an integer with 100x their edge weight (because
+    the Hungarian class only works with integers).
+   *If the proteins aren't connected or if their edge weight is smaller than the threshold value, return 0.*/
   double edge_value = clusters.get_edge_weight(my_prot.pid, my_prot2.pid);
   if (edge_value >= stringency)
-    return edge_value;
+    return (int)(100*edge_value);
   else
-    return 0.0;
-      
+    return 0;
+
 }
 
-static std::vector<std::vector<double> > fill_assignment_matrix(GenomicNeighborhood g1, GenomicNeighborhood g2,
+static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood g1, GenomicNeighborhood g2,
                                                      UndirectedEdgeWeightedGraph<std::string> &clusters,
                                                      double stringency) {
     /*Receives two genomic neighborhoods, g1 and g2, and the similarity graph.
-     *Fills an integer matrix where matrix[i][j] is the similarity measure between the i-th protein of g1 and 
+     *Fills an integer matrix where matrix[i][j] is the similarity measure between the i-th protein of g1 and
      *the j-th protein of g2 are in the same cluster (connected in the similarity graph) and 0 otherwise.*/
 
     int i = 0;
     int j = 0;
-    std::vector<std::vector<double> > matrix;
+    std::vector<std::vector<int> > matrix;
 
     matrix.resize(g1.protein_count());
     for (unsigned int k = 0; k < matrix.size(); k++)
@@ -94,14 +95,13 @@ static std::vector<std::vector<double> > fill_assignment_matrix(GenomicNeighborh
 
 static double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood g2,
                              UndirectedEdgeWeightedGraph<std::string> &clusters, double stringency) {
-    /*Receives two genomic neighborhoods and a vector of clusters.
+    /*Receives two genomic neighborhoods and a protein similarity graph.
      *Returns the MWM porthodom score between the two neighborhoods
      *(Using the hungarian algorithm and the porthodom scoring formula).*/
 
     double sum_temp = 0;
-    std::map<std::pair<int, int>, double> assignments;
-    std::vector<std::vector<double> > matrix = fill_assignment_matrix(g1, g2, clusters, stringency);
-    //*nao dá problema de tipos para o my_hungarian?
+    std::map<std::pair<int, int>, int> assignments;
+    std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, stringency);
     Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
 
     my_hungarian.solve();
@@ -114,13 +114,12 @@ static double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood 
     fprintf(stderr, "\n");
     //PORTHODOM similarity measure calculation, adapted for genome neighborhoods
     //The similarity between to neighborhoods is given by the normalized sum of the
-    //similarities between each pair of "assigned" proteins (as given by the Hungarian
-    //Algorithms
+    //similarities between each pair of "assigned" proteins (as given by the Hungarian algorithm)
     //TO compute:
     //    1. add the assignment values
     //    2. divide by the number of proteins in the "largest" genome
-    for (std::map<std::pair<int, int>,double>::iterator it = assignments.begin(); it != assignments.end(); ++it)
-        sum_temp += it->second;
+    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
+        sum_temp += ((double)it->second)/100; //Division to undo the multiplication in clustering_value()
         std::cout << "SUM_TEMP: " << sum_temp << "\n";
     return sum_temp/std::max(g1.protein_count(), g2.protein_count());
 }
@@ -128,7 +127,7 @@ static double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood 
 void genome_clustering(std::string neighborhoods_file, UndirectedEdgeWeightedGraph<std::string> &clusters,
                        std::string method, double stringency) {
     /*Receives a file containing all the genomic neighborhoods (as output by parse_neighborhood.py),
-     *a vector of protein clusters and the desired genomic neighborhood clustering method.*/
+     *a protein similarity graph and the desired genomic neighborhood clustering method.*/
     /*INCOMPLETE*/
 
     std::cout.precision(2); //configure output limiting to 2 decimal points

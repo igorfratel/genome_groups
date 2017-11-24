@@ -11,25 +11,25 @@ int main(int argc, char *argv[]) {
 	std::string neighborhoods_file; //Contains the genomic neighborhoods
 	std::string genome_clustering_method;
 	std::string prot_sim_filename;
-	std::string formatted_prot_file; //File already formatted for the protein homology method 
+	std::string formatted_prot_file; //File already formatted for the protein homology method
 	std::string protein_homology_method;
 	UndirectedEdgeWeightedGraph<std::string> prot_clusters;
 	int num_prot; //Total number of unique proteins
 	double stringency; //Baseline protein similarity score to consider two proteins as grouped
 
 	switch (atoi(argv[1])) {
-		
+
 		case 0:
 			//default execution
 			//neighborhoods_file, prot_sim_filename, formatted_prot_file, protein_homology_method, num_prot, stringency,
 			//genome_clustering_method
-		
+
 			neighborhoods_file = argv[2];
 			prot_sim_filename = argv[3];
 			formatted_prot_file = argv[4];
 			protein_homology_method = argv[5];
 			num_prot = atoi(argv[6]);
-			stringency = atof(argv[7]); 
+			stringency = atof(argv[7]);
 			genome_clustering_method = argv[8];
 
 			std::cout << "Applying homology detection method...\n";
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 		case 1:
 			//Already has the similarities between the proteins. Needs to cluster them and the
 	  		//genomic neighborhoods.
-			//neighborhoods_file, prot_sim_file, num_prot, stringency, genome_clustering_method
+			//neighborhoods_file, prot_sim_filename, num_prot, stringency, genome_clustering_method
 
 			neighborhoods_file = argv[2];
 			prot_sim_filename = argv[3];
@@ -58,12 +58,6 @@ int main(int argc, char *argv[]) {
 
 			std::cout << "\nClustering genomic neighborhoods...\n";
 			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method, stringency);
-			break;
-
-		case 2:
-			//Already has clustered proteins. Just needs to cluster the genomic neighborhoods
-	  		//neighborhoods_file, prot_clusters_file, genome_clustering_method
-
 			break;
 
 

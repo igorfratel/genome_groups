@@ -6,16 +6,16 @@
  ** O(n^3) implementation derived from libhungarian by Cyrill Stachniss, 2004
  **
  **
- ** Solving the Minimum Assignment Problem using the 
+ ** Solving the Minimum Assignment Problem using the
  ** Hungarian Method.
  **
  ** ** This file may be freely copied and distributed! **
  **
  **
  ** This file is distributed in the hope that it will be useful,
- ** but WITHOUT ANY WARRANTY; without even the implied 
+ ** but WITHOUT ANY WARRANTY; without even the implied
  ** warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- ** PURPOSE.  
+ ** PURPOSE.
  **
  ********************************************************************
  ********************************************************************/
@@ -23,7 +23,7 @@
 #include <algorithm>
 #include "Hungarian.h"
 
-#define verbose (0)
+#define verbose (1)
 
 Hungarian::Hungarian()
 {
@@ -41,11 +41,11 @@ Hungarian::Hungarian(const vector<vector<int> >& input_matrix, int rows, int col
   int i,j, org_cols, org_rows;
   int max_cost;
   max_cost = 0;
-  
+
   org_cols = cols;
   org_rows = rows;
 
-  // is the matrix square? 
+  // is the matrix square?
   // if no, expand with 0-cols / 0-cols
 
   if(rows!=cols)
@@ -53,7 +53,7 @@ Hungarian::Hungarian(const vector<vector<int> >& input_matrix, int rows, int col
 	  rows = std::max(cols, rows);
 	  cols = rows;
   }
-  
+
   m_rows = rows;
   m_cols = cols;
 
@@ -61,9 +61,9 @@ Hungarian::Hungarian(const vector<vector<int> >& input_matrix, int rows, int col
   m_costmatrix.resize(rows, vector<int>(cols,0));
   m_assignment.resize(rows, vector<int>(cols,0));
 
-  for(i=0; i<m_rows; i++) 
+  for(i=0; i<m_rows; i++)
   {
-	  for(j=0; j<m_cols; j++) 
+	  for(j=0; j<m_cols; j++)
 	  {
 	  	  m_costmatrix_aux[i][j] =  (i < org_rows && j < org_cols) ? input_matrix[i][j] : 0;
 		  m_costmatrix[i][j] =  (i < org_rows && j < org_cols) ? input_matrix[i][j] : 0;
@@ -77,21 +77,21 @@ Hungarian::Hungarian(const vector<vector<int> >& input_matrix, int rows, int col
   }
 
 
-  if (mode == HUNGARIAN_MODE_MAXIMIZE_UTIL) 
+  if (mode == HUNGARIAN_MODE_MAXIMIZE_UTIL)
   {
-	  for(i=0; i<m_rows; i++) 
+	  for(i=0; i<m_rows; i++)
 	  {
-		  for(j=0; j<m_cols; j++) 
+		  for(j=0; j<m_cols; j++)
 		  {
 			  m_costmatrix[i][j] =  max_cost - m_costmatrix[i][j];
 		  }
 	  }
   }
-  else if (mode == HUNGARIAN_MODE_MINIMIZE_COST) 
+  else if (mode == HUNGARIAN_MODE_MINIMIZE_COST)
   {
     // nothing to do
   }
-  else 
+  else
     fprintf(stderr,"%s: unknown mode. Mode was set to HUNGARIAN_MODE_MINIMIZE_COST !\n", __FUNCTION__);
 }
 
@@ -104,14 +104,14 @@ std::map<std::pair<int, int>,int> Hungarian::get_assignments() {
 	return assignment;
 }
 
-void hungarian_print_matrix(const vector<vector<int> >& C, int rows, int cols) 
+void hungarian_print_matrix(const vector<vector<int> >& C, int rows, int cols)
 {
 	int i,j;
 	fprintf(stderr , "\n");
-	for(i=0; i<rows; i++) 
+	for(i=0; i<rows; i++)
 	{
 		fprintf(stderr, " [");
-		for(j=0; j<cols; j++) 
+		for(j=0; j<cols; j++)
 		{
 		fprintf(stderr, "%5d ",C[i][j]);
 		}
@@ -128,32 +128,32 @@ void Hungarian::print_cost() {
   hungarian_print_matrix(m_costmatrix_aux, m_rows, m_cols) ;
 }
 
-void Hungarian::print_status() 
+void Hungarian::print_status()
 {
-  
+
   fprintf(stderr,"cost:\n");
   print_cost();
 
   fprintf(stderr,"assignment:\n");
   print_assignment();
-  
+
 }
 
-int Hungarian::init(const vector<vector<int> >& input_matrix, int rows, int cols, MODE mode) 
+int Hungarian::init(const vector<vector<int> >& input_matrix, int rows, int cols, MODE mode)
 {
 
   int i,j, org_cols, org_rows;
   int max_cost;
   max_cost = 0;
-  
+
   org_cols = cols;
   org_rows = rows;
 
-  // is the number of cols  not equal to number of rows ? 
+  // is the number of cols  not equal to number of rows ?
   // if yes, expand with 0-cols / 0-cols
   rows = std::max(cols, rows);
   cols = rows;
-  
+
   m_rows = rows;
   m_cols = cols;
 
@@ -161,9 +161,9 @@ int Hungarian::init(const vector<vector<int> >& input_matrix, int rows, int cols
   m_costmatrix.resize(rows, vector<int>(cols,0));
   m_assignment.resize(rows, vector<int>(cols,0));
 
-  for(i=0; i<m_rows; i++) 
+  for(i=0; i<m_rows; i++)
   {
-    for(j=0; j<m_cols; j++) 
+    for(j=0; j<m_cols; j++)
 	{
 	  m_costmatrix_aux[i][j] =  (i < org_rows && j < org_cols) ? input_matrix[i][j] : 0;
       m_costmatrix[i][j] =  (i < org_rows && j < org_cols) ? input_matrix[i][j] : 0;
@@ -185,9 +185,9 @@ int Hungarian::init(const vector<vector<int> >& input_matrix, int rows, int cols
   else if (mode == HUNGARIAN_MODE_MINIMIZE_COST) {
     // nothing to do
   }
-  else 
+  else
     fprintf(stderr,"%s: unknown mode. Mode was set to HUNGARIAN_MODE_MINIMIZE_COST !\n", __FUNCTION__);
-  
+
   return rows;
 }
 
@@ -210,7 +210,7 @@ bool Hungarian::check_solution(const vector<int>& row_dec, const vector<int>& co
 			return false;
 	}
 	k=0;
-	
+
 	for (l=0;l<n;l++)
 	{
 		if (col_inc[l])
@@ -279,7 +279,7 @@ bool Hungarian::solve()
 
 	cost=0;
 
-	for (i=0;i<m_rows;i++) 
+	for (i=0;i<m_rows;i++)
 	{
 		col_vertex[i]=0;
 		unchosen_row[i]=0;
@@ -287,7 +287,7 @@ bool Hungarian::solve()
 		slack_row[i]=0;
 	}
 
-	for (j=0;j<m_cols;j++) 
+	for (j=0;j<m_cols;j++)
 	{
 		row_vertex[j]=0;
 		parent_row[j] = 0;
@@ -308,7 +308,7 @@ bool Hungarian::solve()
 	{
 		s = m_costmatrix[0][l];
 
-		for (k=1;k<m;k++) 
+		for (k=1;k<m;k++)
 		{
 			if (m_costmatrix[k][l] < s)
 			{
@@ -375,7 +375,7 @@ bool Hungarian::solve()
 			{
 				fprintf(stderr, "node %d: unmatched row %d\n",t,k);
 			}
-		
+
 			unchosen_row[t++]=k;
 		}
 
@@ -390,7 +390,7 @@ bool Hungarian::solve()
 	if (t == 0)
 	{
 		checked = check_solution(row_dec, col_inc, col_vertex);
-		if (checked)
+		if (1)
 		{
 			//finish assignment, wrap up and done.
 			bool assign = assign_solution(row_dec, col_inc, col_vertex);
@@ -422,7 +422,7 @@ bool Hungarian::solve()
 			while (q<t)
 			{
 			// Begin explore node q of the forest 19
-				
+
 				k=unchosen_row[q];
 				s=row_dec[k];
 				for (l=0;l<n;l++)
@@ -455,9 +455,9 @@ bool Hungarian::solve()
 					}
 				}
 			// End explore node q of the forest 19
-				q++;	
+				q++;
 			}
- 
+
 	  // Begin introduce a new zero into the matrix 21
 		s=INF;
 		for (l=0;l<n;l++)
@@ -483,7 +483,7 @@ bool Hungarian::solve()
 					k=slack_row[l];
 					if (verbose)
 					{
-						fprintf(stderr, 
+						fprintf(stderr,
 						"Decreasing uncovered elements by %d produces zero at [%d,%d]\n",
 						s,k,l);
 					}
@@ -503,7 +503,7 @@ bool Hungarian::solve()
 						if (verbose)
 							{ fprintf(stderr, "node %d: row %d==col %d--row %d\n",t,row_vertex[l],l,k);}
 						unchosen_row[t++]=row_vertex[l];
-						
+
 					}
 		// End look at a new zero 22
 				}
@@ -557,7 +557,7 @@ bool Hungarian::solve()
 				return false;
 			}
 		}
-		
+
 		// Begin get ready for another stage 17
 			t=0;
 			for (l=0;l<n;l++)
@@ -591,4 +591,3 @@ const vector<vector<int> >& Hungarian::assignment() const
 {
 	return m_assignment;
 }
-
