@@ -84,8 +84,8 @@ static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood
         j = 0;
         for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
             matrix[i][j] = clustering_value(*it, *it2, clusters, stringency);
-	    //*DEBUG PRINTOUT
-            std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
+	        //DEBUG
+            //std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
             j++;
         }
         i++;
@@ -106,12 +106,12 @@ static double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood 
 
     my_hungarian.solve();
     assignments = my_hungarian.get_assignments();
-    //*DEBUG
-    std::cout <<"Assignments between (" << g1.get_accession() << ", " << g1.get_organism() << ") and "
+    //DEBUG
+    /*std::cout <<"Assignments between (" << g1.get_accession() << ", " << g1.get_organism() << ") and "
     << "(" << g2.get_accession() << ", " << g2.get_organism() << "):\n";
     my_hungarian.print_assignment();
     my_hungarian.print_cost();
-    fprintf(stderr, "\n");
+    fprintf(stderr, "\n");*/
     //PORTHODOM similarity measure calculation, adapted for genome neighborhoods
     //The similarity between to neighborhoods is given by the normalized sum of the
     //similarities between each pair of "assigned" proteins (as given by the Hungarian algorithm)
@@ -120,36 +120,41 @@ static double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood 
     //    2. divide by the number of proteins in the "largest" genome
     for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
         sum_temp += ((double)it->second)/100; //Division to undo the multiplication in clustering_value()
-        std::cout << "SUM_TEMP: " << sum_temp << "\n";
+        //DEBUG
+        /*std::cout << "SUM_TEMP: " << sum_temp << "\n";*/
     return sum_temp/std::max(g1.protein_count(), g2.protein_count());
 }
 
 void genome_clustering(std::string neighborhoods_file, UndirectedEdgeWeightedGraph<std::string> &clusters,
-                       std::string method, double stringency) {
+                       std::string method, double stringency, std::string genome_sim_filename) {
     /*Receives a file containing all the genomic neighborhoods (as output by parse_neighborhood.py),
-     *a protein similarity graph and the desired genomic neighborhood clustering method.*/
+     *a protein similarity graph and the desired genomic neighborhood clustering method.
+     *Writes the similarity between all genomic neighborhoods on the genome_sim_filename in
+     *the format "organism1 acession1 organism2 acession2 score"*/
     /*INCOMPLETE*/
-
+    std::ofstream file(genome_sim_filename.c_str());
     std::cout.precision(2); //configure output limiting to 2 decimal points
     std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_file);
-    for (int i = 0; i < neighborhoods.size(); i++) {
-      //*DEBUG print the genomic neighborhoods we are consdering
+    double score;
+
+    //DEBUG print the genomic neighborhoods we are consdering
+    /*for (int i = 0; i < neighborhoods.size(); i++) {
         std::cout << neighborhoods[i].get_accession() << " " << neighborhoods[i].get_organism() <<
                      " " << neighborhoods[i].protein_count() << "\n";
         for (GenomicNeighborhood::iterator it = neighborhoods[i].begin(); it != neighborhoods[i].end(); ++it) {
             std::cout << it->pid << " " << it->locus << " " << it->cds << "\n";
         }
     }
-    std::cout << "\n";
-    double score;
+    std::cout << "\n"*/;
     if (method == "simple") {
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m; n < neighborhoods.size(); n++) {
                 score = compare_neighborhoods(neighborhoods[m], neighborhoods[n], clusters, stringency);
-                std::cout <<"Score between (" << neighborhoods[m].get_accession() << ", " <<
-                            neighborhoods[m].get_organism() << ") and " << "(" <<
-                            neighborhoods[n].get_accession() << ", " <<
-                            neighborhoods[n].get_organism() << "): " << score << "\n\n";
+                file << neighborhoods[m].get_organism() << " " <<
+                        neighborhoods[m].get_accession() << " " <<
+                        neighborhoods[n].get_organism() << " " <<
+                        neighborhoods[n].get_accession() << " " <<
+                        score << "\n";
             }
         }
     }

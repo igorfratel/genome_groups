@@ -23,7 +23,7 @@
 #include <algorithm>
 #include "Hungarian.h"
 
-#define verbose (1)
+#define verbose (0) //DEBUG
 
 Hungarian::Hungarian()
 {

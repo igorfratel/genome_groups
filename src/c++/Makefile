@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -std=c++11 -I -g -pg
+CFLAGS = -Wall -std=c++11 -I -pg
 
 default: projeto
 

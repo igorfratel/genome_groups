@@ -10,9 +10,11 @@
 #include "UndirectedEdgeWeightedGraph.h"
 
 /*Receives a file containing all the genomic neighborhoods (as output by parse_neighborhood.py),
- *a protein similarity graph and the desired genomic neighborhood clustering method.*/
+ *a protein similarity graph and the desired genomic neighborhood clustering method.
+ *Writes the similarity between all genomic neighborhoods on the genome_sim_filename
+ *the format "organism1 acession1 organism2 acession2 score"*/ 
 /*INCOMPLETE*/
 void genome_clustering(std::string neighborhoods_file, UndirectedEdgeWeightedGraph<std::string> &clusters,
-                       std::string method, double stringency);
+                       std::string method, double stringency, std::string genome_sim_filename);
 
 #endif

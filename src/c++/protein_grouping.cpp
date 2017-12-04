@@ -32,8 +32,8 @@ UndirectedEdgeWeightedGraph<std::string> protein_clustering(std::string prot_sim
         my_graph.add_node(prot2);
         weight_aux = ::atof(weight.c_str());
 
-        //debug
-        std::cout << prot1 << " " << prot2 << " weight: " << weight_aux << "\n";
+        //DEBUG
+        //std::cout << prot1 << " " << prot2 << " weight: " << weight_aux << "\n";
         my_graph.add_edge(prot1, prot2, weight_aux);
     }
     file.close();

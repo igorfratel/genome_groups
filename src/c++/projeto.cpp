@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
 	std::string formatted_prot_file; //File already formatted for the protein homology method
 	std::string protein_homology_method;
 	UndirectedEdgeWeightedGraph<std::string> prot_clusters;
+	std::string genome_sim_filename;
 	int num_prot; //Total number of unique proteins
 	double stringency; //Baseline protein similarity score to consider two proteins as grouped
 
@@ -22,7 +23,7 @@ int main(int argc, char *argv[]) {
 		case 0:
 			//default execution
 			//neighborhoods_file, prot_sim_filename, formatted_prot_file, protein_homology_method, num_prot, stringency,
-			//genome_clustering_method
+			//genome_clustering_method, genome_sim_filename
 
 			neighborhoods_file = argv[2];
 			prot_sim_filename = argv[3];
@@ -31,6 +32,7 @@ int main(int argc, char *argv[]) {
 			num_prot = atoi(argv[6]);
 			stringency = atof(argv[7]);
 			genome_clustering_method = argv[8];
+			genome_sim_filename = argv[9];
 
 			std::cout << "Applying homology detection method...\n";
 			homology_detection(formatted_prot_file, protein_homology_method, prot_sim_filename);
@@ -39,25 +41,31 @@ int main(int argc, char *argv[]) {
 			prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 			std::cout << "\nClustering genomic neighborhoods...\n";
-			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method, stringency);
+			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method, stringency, genome_sim_filename);
+
+			std::cout << "\nDone!";
 			break;
 
 		case 1:
 			//Already has the similarities between the proteins. Needs to cluster them and the
 	  		//genomic neighborhoods.
-			//neighborhoods_file, prot_sim_filename, num_prot, stringency, genome_clustering_method
+			//neighborhoods_file, prot_sim_filename, num_prot, stringency, genome_clustering_method,
+			//genome_sim_filename
 
 			neighborhoods_file = argv[2];
 			prot_sim_filename = argv[3];
 			num_prot = atoi(argv[4]);
 			stringency = atof(argv[5]);
 			genome_clustering_method = argv[6];
+			genome_sim_filename = argv[7];
 
 			std::cout << "\nClustering proteins...\n";
 			prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 			std::cout << "\nClustering genomic neighborhoods...\n";
-			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method, stringency);
+			genome_clustering(neighborhoods_file, prot_clusters, genome_clustering_method, stringency, genome_sim_filename);
+
+			std::cout << "\nDone!\n";
 			break;
 
 
