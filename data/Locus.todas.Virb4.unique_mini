@@ -1,0 +1,77 @@
+ORGANISM  Rickettsia sibirica 246  accession no is AABW01000001.1 Protein is EAA26079.1
+.   cds                dir len   pid                  type   gene     locus                gi         product                                      
+.   803087..804568     -   493   EAA26069.1           CDS    .        rsib_orf877          .          NADH dehydrogenase I chain M                 
+.   804722..806695     -   657   EAA26070.1           CDS    .        rsib_orf878          .          NADH dehydrogenase I chain L                 
+.   806695..807009     -   104   EAA26071.1           CDS    .        rsib_orf879          .          NADH dehydrogenase I chain K                 
+.   807002..807619     -   205   EAA26072.1           CDS    .        rsib_orf880          .          NADH dehydrogenase I chain J                 
+.   807652..807909     -   85    EAA26073.1           CDS    .        rsib_orf881          .          hypothetical protein                         
+.   807915..808319     -   134   EAA26074.1           CDS    .        rsib_orf882          .          hypothetical protein                         
+.   808419..810083     -   554   EAA26075.1           CDS    .        rsib_orf883          .          hypothetical protein                         
+.   810170..810883     -   237   EAA26076.1           CDS    .        rsib_orf884          .          hypothetical protein                         
+.   810927..811751     -   274   EAA26077.1           CDS    .        rsib_orf885          .          tellurium resistance protein TerC            
+.   811837..815325     -   1162  EAA26078.1           CDS    .        rsib_orf886          .          hypothetical protein                         
+--> 815461..817893     -   810   EAA26079.1           CDS    .        rsib_orf887          .          virB4 protein precursor                      
+.   818238..819515     -   425   EAA26080.1           CDS    .        rsib_orf888          .          seryl-tRNA synthetase                        
+.   819493..820248     -   251   EAA26081.1           CDS    .        rsib_orf889          .          sec-independent protein translocase protein  
+.   820315..821850     -   511   EAA26082.1           CDS    .        rsib_orf890          .          ampG protein                                 
+.   821988..824498     -   836   EAA26083.1           CDS    .        rsib_orf891          .          hypothetical protein                         
+.   824747..826045     +   432   EAA26084.1           CDS    .        rsib_orf892          .          UDP-glucose 6-dehydrogenase                  
+.   826162..829707     +   1181  EAA26085.1           CDS    .        rsib_orf893          .          DNA polymerase III alpha chain               
+.   829979..830188     -   69    EAA26086.1           CDS    .        rsib_orf894          .          hypothetical protein                         
+.   830361..830621     -   86    EAA26087.1           CDS    .        rsib_orf895          .          hypothetical protein                         
+.   830660..830938     -   92    EAA26088.1           CDS    .        rsib_orf896          .          hypothetical protein                         
+.   832318..834945     -   875   EAA26089.1           CDS    .        rsib_orf901          .          DNA polymerase I (POL I)                     
+---------------------------------------
+ORGANISM  Rickettsia sibirica 246  accession no is AABW01000001.1 Protein is EAA25794.1
+.   cds                dir len   pid                  type   gene     locus                gi         product                                      
+.   515046..515750     -   234   EAA25784.1           CDS    .        rsib_orf559          .          tRNA (guanine-n1)-methyltransferase          
+.   516449..516916     -   155   EAA25785.1           CDS    .        rsib_orf562          .          putative acetate kinase (AckA)               
+.   517074..517286     -   70    EAA25786.1           CDS    .        rsib_orf563          .          putative acetate kinase (AckA)               
+.   517514..517939     -   141   EAA25787.1           CDS    .        rsib_orf565          .          putative phosphate acetyltransferase (Pta)   
+.   517929..518033     -   99    EAA25788.1           CDS    .        rsib_orf566          .          putative phosphate acetyltransferase (Pta)   
+.   519105..522566     -   1153  EAA25789.1           CDS    .        rsib_orf568          .          hypothetical protein                         
+.   522719..525355     -   878   EAA25790.1           CDS    .        rsib_orf569          .          hypothetical protein                         
+.   525568..528468     -   966   EAA25791.1           CDS    .        rsib_orf570          .          hypothetical protein                         
+.   528475..530460     -   661   EAA25792.1           CDS    .        rsib_orf571          .          hypothetical protein                         
+.   530447..533425     -   992   EAA25793.1           CDS    .        rsib_orf572          .          hypothetical protein                         
+--> 533543..535960     -   805   EAA25794.1           CDS    .        rsib_orf573          .          virB4 protein precursor                      
+.   536050..536337     -   95    EAA25795.1           CDS    .        rsib_orf574          .          hypothetical protein                         
+.   536350..537273     -   307   EAA25796.1           CDS    .        rsib_orf575          .          acetylglutamate kinase                       
+.   537221..537859     -   212   EAA25797.1           CDS    .        rsib_orf576          .          putative GTP-binding protein                 
+.   538466..538702     -   78    EAA25798.1           CDS    .        rsib_orf577          .          50S ribosomal protein L31                    
+.   538699..538992     -   97    EAA25799.1           CDS    .        rsib_orf578          .          50S ribosomal protein L28                    
+.   539580..539753     +   57    EAA25800.1           CDS    .        rsib_orf579          .          hypothetical protein                         
+.   539753..540250     +   165   EAA25801.1           CDS    .        rsib_orf580          .          hypothetical protein                         
+.   540432..540755     +   107   EAA25802.1           CDS    .        rsib_orf581          .          hypothetical protein                         
+.   541129..541341     +   70    EAA25803.1           CDS    .        rsib_orf583          .          hypothetical protein                         
+.   541419..541667     -   82    EAA25804.1           CDS    .        rsib_orf584          .          hypothetical protein                         
+---------------------------------------
+ORGANISM  Campylobacter upsaliensis RM3195  accession no is AAFJ01000001.1 Protein is EAL53896.1
+.   cds                dir len   pid                  type   gene     locus                gi         product                                      
+.   31476..32858       -   460   EAL53886.1           CDS    dnaB     CUP0641              .          replicative DNA helicase VC0371              
+.   33022..33645       +   207   EAL53887.1           CDS    .        CUP0642              .          PARA protein                                 
+.   33736..33843       +   82    EAL53888.1           CDS    .        CUP0643              .          hypothetical protein                         
+.   34042..34206       +   54    EAL53889.1           CDS    .        CUP0644              .          predicted protein                            
+.   34206..34442       +   78    EAL53890.1           CDS    .        CUP0645              .          hypothetical protein                         
+.   34439..35398       +   319   EAL53891.1           CDS    .        CUP0646              .          RelA/SpoT domain protein                     
+.   35395..36129       -   244   EAL53892.1           CDS    .        CUP0647              .          conserved hypothetical protein               
+.   36163..37017       -   284   EAL53893.1           CDS    .        CUP0648              .          conserved hypothetical protein               
+.   37756..37899       +   47    EAL53894.1           CDS    .        CUP0649              .          conserved hypothetical protein               
+.   37911..38153       +   80    EAL53895.1           CDS    .        CUP0650              .          conserved hypothetical protein               
+--> 38163..38810       +   215   EAL53896.1           CDS    .        CUP0651              .          VirB4 homolog, putative                      
+.   38849..38965       -   104   EAL53897.1           CDS    .        CUP0652              .          hypothetical protein                         
+.   39055..39131       -   .     .                    tRNA   .        CUP_tRNA-Ile-1       .          tRNA-Ile                                     
+.   39139..39214       -   .     .                    tRNA   rrsA     CUP_tRNA-Ala-1       .          tRNA-Ala                                     
+.   39328..40836       -   .     .                    rRNA   rrsA     CUP_Cu16SA           .          16S ribosomal RNA                            
+.   41170..44010       -   946   EAL53898.1           CDS    ftsK     CUP0656              .          cell division protein (ftsK)                 
+.   44119..46374       -   751   EAL53899.1           CDS    .        CUP0657              .          flagellin B homolog (fla), putative          
+.   46508..46594       +   .     .                    tRNA   murA     CUP_tRNA-Leu-2       .          tRNA-Leu                                     
+.   46808..48064       +   418   EAL53900.1           CDS    murA     CUP0659              .          UDP-N-acetylglucosamine                      
+.   48061..49227       +   388   EAL53901.1           CDS    moeA-3   CUP0660              .          molybdopterin biosynthesis protein (moeA)    
+.   49389..50750       +   453   EAL53902.1           CDS    .        CUP0661              .          MATE efflux family protein, putative         
+.   50815..50889       +   .     .                    tRNA   .        CUP_tRNA-Gly-1       .          tRNA-Gly                                     
+.   50909..51538       +   209   EAL53903.1           CDS    .        CUP0663              .          conserved hypothetical protein TIGR00044     
+.   51547..52296       -   249   EAL53904.1           CDS    hag      CUP0664              .          flagellin                                    
+.   52326..52799       -   157   EAL53905.1           CDS    .        CUP0665              .          probable integral membrane protein Cj0721c   
+.   52801..53907       -   368   EAL53906.1           CDS    prfB     CUP0666              .          peptide chain release factor 2               
+---------------------------------------
