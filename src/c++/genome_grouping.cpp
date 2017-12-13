@@ -19,7 +19,6 @@ static std::vector<GenomicNeighborhood> parse_neighborhoods(std::string neighbor
             organism = token + ' ';
             std::getline(file, token); //species
             organism += token;
-
             std::getline(file, token); //accession
             accession = token;
 
@@ -137,7 +136,7 @@ void genome_clustering(std::string neighborhoods_file, UndirectedEdgeWeightedGra
     std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_file);
     double score;
 
-    //DEBUG print the genomic neighborhoods we are consdering
+    //DEBUG print the genomic neighborhoods we are considering
     /*for (int i = 0; i < neighborhoods.size(); i++) {
         std::cout << neighborhoods[i].get_accession() << " " << neighborhoods[i].get_organism() <<
                      " " << neighborhoods[i].protein_count() << "\n";
@@ -146,6 +145,7 @@ void genome_clustering(std::string neighborhoods_file, UndirectedEdgeWeightedGra
         }
     }
     std::cout << "\n"*/;
+    if(neighborhoods.size() == 0) std::cout << "WHAAAT";
     if (method == "simple") {
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m; n < neighborhoods.size(); n++) {
