@@ -61,7 +61,7 @@ void UndirectedEdgeWeightedGraph<T>::add_connected_nodes(T node1, T node2, doubl
 }
 
 template <typename T>
-int UndirectedEdgeWeightedGraph<T>::are_connected(T node1, T node2) {
+bool UndirectedEdgeWeightedGraph<T>::are_connected(T node1, T node2) {
 	/*Returns 1 if given nodes are directly connected and 0 otherwise*/
 	node_info_t aux_x;
 	node_info_t aux_y;
@@ -70,12 +70,12 @@ int UndirectedEdgeWeightedGraph<T>::are_connected(T node1, T node2) {
 		aux_y = (nodes.at(node2));
 	}
 	catch (...) {
-		return 0;
+		return false;
 	}
 	int x = aux_x.index;
 	int y = aux_y.index;
-	if (adj[x][y] > 0) return 1;
-	return 0;
+	if (adj[x][y] > 0) return true;
+	return false;
 }
 
 template <typename T>
