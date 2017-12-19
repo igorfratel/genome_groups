@@ -145,7 +145,7 @@ void genome_clustering(std::string neighborhoods_file, UndirectedEdgeWeightedGra
         }
     }
     std::cout << "\n"*/;
-    if (method == "simple") {
+    if (method == "porthodom") {
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
                 score = compare_neighborhoods(neighborhoods[m], neighborhoods[n], clusters, stringency);
