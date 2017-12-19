@@ -8,7 +8,8 @@
 typedef struct {
 	std::string locus;
 	std::string pid;
-	std::string cds;
+	int cds_begin;
+	int cds_end;
 } protein_info_t;
 
 
@@ -17,9 +18,12 @@ class GenomicNeighborhood {
 	private:
 		std::string accession;
 		std::string organism;
-		std::
 		std::vector<protein_info_t> seeds;
 		std::vector<protein_info_t> proteins;
+
+		/*Receives the cds string in a format like "534..345" and splits it in the two composing numbers*/
+		/*Returns a vector with two positions.*/
+		std::pair<int, int> parse_cds(std::string cds);
 
 
 	public:

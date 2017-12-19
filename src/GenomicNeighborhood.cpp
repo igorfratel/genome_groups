@@ -12,7 +12,9 @@ void GenomicNeighborhood::add_seed(std::string locus, std::string pid, std::stri
 	protein_info_t my_prot;
 	my_prot.locus = locus;
 	my_prot.pid = pid;
-	my_prot.cds = cds;
+	std::vector<int> cds_vector = parse_cds(cds);
+	my_prot.cds_begin = cds_vector[0];
+	my_prot.cds_end = cds_vector[1];
 	seeds.push_back(my_prot);
 }
 
@@ -21,8 +23,22 @@ void GenomicNeighborhood::add_protein(std::string locus, std::string pid, std::s
 	protein_info_t my_prot;
 	my_prot.locus = locus;
 	my_prot.pid = pid;
-	my_prot.cds = cds;
+	std::vector<int> cds_vector = parse_cds(cds);
+	my_prot.cds_begin = cds_vector[0];
+	my_prot.cds_end = cds_vector[1];
 	proteins.push_back(my_prot);
+}
+
+std::vector<int> GenomicNeighborhood::parse_cds(std::string cds) {
+	/*Receives the cds string in a format like "534..345" and splits it in the two composing numbers*/
+	/*Returns a vector with two positions.*/
+	std::vector<int> cds_array;
+	std::stringstream ss(cds);
+	int temp;
+	std::replace(cds.begin(), cds.end(), '.', ' ');  // replace '.' by ' '
+    while (ss >> temp)
+    cds_array.push_back(temp);
+    return cds_array;
 }
 
 std::string GenomicNeighborhood::get_accession() {return accession;}
