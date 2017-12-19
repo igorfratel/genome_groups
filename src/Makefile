@@ -1,11 +1,11 @@
 CC = g++
 CFLAGS = -Wall -Wextra -Wpedantic -std=c++11 -I -pg
 
-default: projeto
+default: neighborhood_comparator
 
-projeto: projeto.cpp UndirectedEdgeWeightedGraph.o GenomicNeighborhood.o Hungarian.o\
+neighborhood_comparator: neighborhood_comparator.cpp UndirectedEdgeWeightedGraph.o GenomicNeighborhood.o Hungarian.o\
 	 			 protein_grouping.o genome_grouping.o
-	$(CC) projeto.cpp $(CFLAGS) -o projeto UndirectedEdgeWeightedGraph.o GenomicNeighborhood.o\
+	$(CC) neighborhood_comparator.cpp $(CFLAGS) -o neighborhood_comparator UndirectedEdgeWeightedGraph.o GenomicNeighborhood.o\
 	 															 Hungarian.o protein_grouping.o genome_grouping.o
 
 protein_grouping: protein_grouping.cpp protein_grouping.h
@@ -24,4 +24,4 @@ Hungarian: Hungarian.cpp Hungarian.h
 	$(CC) $(CFLAGS) -c Hungarian
 
 clean:
-	$(RM) projeto *.o *~
+	$(RM) neighborhood_comparator *.o *~

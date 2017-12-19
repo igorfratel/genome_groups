@@ -1,13 +1,28 @@
-COMO EXECUTAR:
+HOW TO RUN:
 
 - 1: ./make
-- 2: ./python parse_neighborhood.py "arquivo com vizinhanças gênicas"
-- 3: ./projeto <0 ou 1 ou 2> <args referentes ao modo escolhido>
+- 2: ./python parse_neighborhood.py "file with neighborhoods"
+- 3: ./neighborhood_comparator <full or partial> <args according to chosen mode>
 
-Modo 0 --> //default execution
-            //neighborhoods_file, prot_sim_filename, formatted_prot_file, protein_homology_method, num_prot, stringency,
-            //genome_clustering_method, genome_sim_filename
 
-Modo 1 --> 	//Already has the similarities between the proteins. Needs to cluster them and the neighborhoods.
-            //neighborhoods_file, prot_sim_filename, num_prot, stringency, genome_clustering_method,
-            //genome_sim_filename
+ARGUMENTS FOR EACH EXECUTION MODE:
+
+full --> default execution
+    -e --execution_mode full
+    -n --neighborhoods_filename
+    -s --prot_sim_filename
+    -f --formatted_prot_filename
+    -p --protein_comparing
+    -m --num_prot
+    -t --stringency
+    -g --genome_comparing
+    -o --output
+
+partial --> Already has the similarities between the proteins.
+    -e --execution_mode partial
+    -n --neighborhoods_filename
+    -s --prot_sim_filename
+    -m --num_prot
+    -t --stringency
+    -g --genome_comparing
+    -o --output
