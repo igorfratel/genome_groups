@@ -33,12 +33,28 @@ std::vector<int> GenomicNeighborhood::parse_cds(std::string cds) {
 	/*Receives the cds string in a format like "534..345" and splits it in the two composing numbers*/
 	/*Returns a vector with two positions.*/
 	std::vector<int> cds_array;
-	std::stringstream ss(cds);
 	int temp;
 	std::replace(cds.begin(), cds.end(), '.', ' ');  // replace '.' by ' '
+	std::stringstream ss(cds);
     while (ss >> temp)
     cds_array.push_back(temp);
     return cds_array;
+}
+
+std::vector<int> GenomicNeighborhood::get_cds() {
+	/*Returns vector containing the first and last coordinates of the genomic neighborhood*/
+	std::vector<int> cds_vector;
+	cds_vector.push_back(proteins[0].cds_begin);
+	cds_vector.push_back(proteins.back().cds_end);
+	return cds_vector;
+}
+
+std::string GenomicNeighborhood::get_cds_string() {
+	/*Returns vector containing the first and last coordinates of the genomic neighborhood
+	 *in a string "43434..5654" format*/
+	std::vector<int> cds_vector = get_cds();
+	std::string cds = std::to_string(cds_vector[0]) + ".." + std::to_string(cds_vector[1]);
+	return cds;
 }
 
 std::string GenomicNeighborhood::get_accession() {return accession;}

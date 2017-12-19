@@ -67,7 +67,7 @@ EAA26089.1
 832318..834945
 end
 Rickettsia
-sibirica2
+sibirica
 AABW01000001.1
 rsib_orf559
 EAA25784.1

@@ -22,7 +22,7 @@ ORGANISM  Rickettsia sibirica 246  accession no is AABW01000001.1 Protein is EAA
 .   830660..830938     -   92    EAA26088.1           CDS    .        rsib_orf896          .          hypothetical protein
 .   832318..834945     -   875   EAA26089.1           CDS    .        rsib_orf901          .          DNA polymerase I (POL I)
 ---------------------------------------
-ORGANISM  Rickettsia sibirica2 246  accession no is AABW01000001.1 Protein is EAA25794.1
+ORGANISM  Rickettsia sibirica 246  accession no is AABW01000001.1 Protein is EAA25794.1
 .   cds                dir len   pid                  type   gene     locus                gi         product
 .   515046..515750     -   234   EAA25784.1           CDS    .        rsib_orf559          .          tRNA (guanine-n1)-methyltransferase
 .   516449..516916     -   155   EAA25785.1           CDS    .        rsib_orf562          .          putative acetate kinase (AckA)

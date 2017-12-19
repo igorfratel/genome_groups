@@ -151,8 +151,10 @@ void genome_clustering(std::string neighborhoods_file, UndirectedEdgeWeightedGra
                 score = compare_neighborhoods(neighborhoods[m], neighborhoods[n], clusters, stringency);
                 file << neighborhoods[m].get_organism() << " " <<
                         neighborhoods[m].get_accession() << " " <<
+                        neighborhoods[m].get_cds_string() << " " <<
                         neighborhoods[n].get_organism() << " " <<
                         neighborhoods[n].get_accession() << " " <<
+                        neighborhoods[n].get_cds_string() << " " <<
                         score << "\n";
             }
         }

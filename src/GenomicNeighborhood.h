@@ -51,6 +51,13 @@ class GenomicNeighborhood {
 		/*Returns number of proteins in the genomic neighborhood*/
 		int protein_count();
 
+		/*Returns vector containing the first and last coordinates of the genomic neighborhood*/
+		std::vector<int> get_cds();
+
+		/*Returns vector containing the first and last coordinates of the genomic neighborhood
+		*in a string "43434..5654" format*/
+		std::string get_cds_string();
+
 		/*Iterator for protein_info_t types, in the order that they were inserted in the object*/
 		iterator begin();
 
