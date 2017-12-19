@@ -33,7 +33,7 @@ static std::vector<GenomicNeighborhood> parse_neighborhoods(std::string neighbor
                     std::getline(file, token); //cds from seed
                     cds = token;
                     temp_neigh.add_protein(locus, pid, cds);
-                    temp_neigh.set_seed(locus, pid, cds);
+                    temp_neigh.add_seed(locus, pid, cds);
                 }
                 else {
                     //token is already the locus
@@ -145,7 +145,6 @@ void genome_clustering(std::string neighborhoods_file, UndirectedEdgeWeightedGra
         }
     }
     std::cout << "\n"*/;
-    if(neighborhoods.size() == 0) std::cout << "WHAAAT";
     if (method == "simple") {
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m; n < neighborhoods.size(); n++) {

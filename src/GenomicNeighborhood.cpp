@@ -7,13 +7,13 @@ GenomicNeighborhood::GenomicNeighborhood (std::string accession_code, std::strin
 	this->organism = organism_name;
 }
 
-void GenomicNeighborhood::set_seed(std::string locus, std::string pid, std::string cds) {
-	/*Receives the locus, pid and cds of the anchor/seed protein and adds that info to the object*/
+void GenomicNeighborhood::add_seed(std::string locus, std::string pid, std::string cds) {
+	/*Receives the locus, pid and cds of an anchor/seed protein and adds that info to the object*/
 	protein_info_t my_prot;
 	my_prot.locus = locus;
 	my_prot.pid = pid;
 	my_prot.cds = cds;
-	seed = my_prot;
+	seeds.push_back(my_prot);
 }
 
 void GenomicNeighborhood::add_protein(std::string locus, std::string pid, std::string cds) {
