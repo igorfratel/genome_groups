@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <sstream>
 
 typedef struct {
 	std::string locus;
@@ -23,7 +25,7 @@ class GenomicNeighborhood {
 
 		/*Receives the cds string in a format like "534..345" and splits it in the two composing numbers*/
 		/*Returns a vector with two positions.*/
-		std::pair<int, int> parse_cds(std::string cds);
+		std::vector<int> parse_cds(std::string cds);
 
 
 	public:
@@ -43,8 +45,8 @@ class GenomicNeighborhood {
 		/*Returns name of the genomic neighborhood's organism*/
 		std::string get_organism();
 
-		/*Returns anchor/seed protein*/
-		protein_info_t get_seed();
+		/*Returns anchor/seed proteins*/
+		std::vector<protein_info_t> get_seeds();
 
 		/*Returns number of proteins in the genomic neighborhood*/
 		int protein_count();

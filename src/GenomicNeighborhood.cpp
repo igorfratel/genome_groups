@@ -45,7 +45,7 @@ std::string GenomicNeighborhood::get_accession() {return accession;}
 
 std::string GenomicNeighborhood::get_organism() {return organism;}
 
-protein_info_t GenomicNeighborhood::get_seed() {return seed;}
+std::vector<protein_info_t> GenomicNeighborhood::get_seeds() {return seeds;}
 
 int GenomicNeighborhood::protein_count() {return proteins.size();}
 
