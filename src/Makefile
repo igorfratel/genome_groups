@@ -3,9 +3,9 @@ CFLAGS = -Wall -Wextra -Wpedantic -std=c++11 -I -pg
 
 default: neighborhood_comparator
 
-neighborhood_comparator: neighborhood_comparator.cpp UndirectedEdgeWeightedGraph.o GenomicNeighborhood.o Hungarian.o\
+neighborhood_comparator: neighborhood_comparator.cpp ProteinCollection.o GenomicNeighborhood.o Hungarian.o\
 	 			 protein_grouping.o genome_grouping.o
-	$(CC) neighborhood_comparator.cpp $(CFLAGS) -o neighborhood_comparator UndirectedEdgeWeightedGraph.o GenomicNeighborhood.o\
+	$(CC) neighborhood_comparator.cpp $(CFLAGS) -o neighborhood_comparator ProteinCollection.o GenomicNeighborhood.o\
 	 															 Hungarian.o protein_grouping.o genome_grouping.o
 
 protein_grouping: protein_grouping.cpp protein_grouping.h
@@ -14,8 +14,8 @@ protein_grouping: protein_grouping.cpp protein_grouping.h
 genome_grouping: genome_grouping.cpp genome_grouping.h
 	$(CC) $(CFLAGS) -c genome_grouping
 
-UndirectedEdgeWeightedGraph: UndirectedEdgeWeightedGraph.cpp UndirectedEdgeWeightedGraph.h
-	$(CC) $(CFLAGS) -c UndirectedEdgeWeightedGraph
+ProteinCollection: ProteinCollection.cpp ProteinCollection.h
+	$(CC) $(CFLAGS) -c ProteinCollection
 
 GenomicNeighborhood: GenomicNeighborhood.cpp GenomicNeighborhood.h
 	$(CC) $(CFLAGS) -c GenomicNeighborhood

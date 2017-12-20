@@ -1,10 +1,10 @@
-#include "UndirectedEdgeWeightedGraph.h"
+/*Undirected edge-weighted graph implementation*/
 
-template <typename T>
-UndirectedEdgeWeightedGraph<T>::UndirectedEdgeWeightedGraph() {}
+#include "ProteinCollection.h"
 
-template <typename T>
-UndirectedEdgeWeightedGraph<T>::UndirectedEdgeWeightedGraph(int n_nodes) {
+ProteinCollection::ProteinCollection() {}
+
+ProteinCollection::ProteinCollection(int n_nodes) {
 	/*Creates object with known number of nodes to be added*/
 
 	adj.resize(n_nodes);
@@ -12,9 +12,8 @@ UndirectedEdgeWeightedGraph<T>::UndirectedEdgeWeightedGraph(int n_nodes) {
 		adj[i].resize(n_nodes);
 }
 
-template <typename T>
-void UndirectedEdgeWeightedGraph<T>::add_node(T node) {
-	/*Adds node with T identifier*/
+void ProteinCollection::add_protein(std::string node) {
+	/*Adds node with string identifier*/
 
 	node_info_t my_node_info;
 	my_node_info.index = nodes.size();
@@ -27,8 +26,7 @@ void UndirectedEdgeWeightedGraph<T>::add_node(T node) {
 	}
 }
 
-template <typename T>
-void UndirectedEdgeWeightedGraph<T>::add_edge(T node1, T node2, double weight) {
+void ProteinCollection::connect_proteins(std::string node1, std::string node2, double weight) {
 	/*Adds edge connecting two existing nodes with given weight*/
 
 	int x = (nodes.at(node1)).index;
@@ -37,8 +35,7 @@ void UndirectedEdgeWeightedGraph<T>::add_edge(T node1, T node2, double weight) {
 	adj[y][x] = weight;
 }
 
-template <typename T>
-void UndirectedEdgeWeightedGraph<T>::add_connected_nodes(T node1, T node2, double weight) {
+void ProteinCollection::add_connected_proteins(std::string node1, std::string node2, double weight) {
 	/*Adds two nodes and connects them with given weight*/
 	node_info_t my_node_info1, my_node_info2;
 
@@ -60,8 +57,7 @@ void UndirectedEdgeWeightedGraph<T>::add_connected_nodes(T node1, T node2, doubl
 	adj[my_node_info2.index][my_node_info1.index] = weight;
 }
 
-template <typename T>
-bool UndirectedEdgeWeightedGraph<T>::are_connected(T node1, T node2) {
+bool ProteinCollection::are_connected(std::string node1, std::string node2) {
 	/*Returns 1 if given nodes are directly connected and 0 otherwise*/
 	node_info_t aux_x;
 	node_info_t aux_y;
@@ -78,8 +74,7 @@ bool UndirectedEdgeWeightedGraph<T>::are_connected(T node1, T node2) {
 	return false;
 }
 
-template <typename T>
-double UndirectedEdgeWeightedGraph<T>::get_edge_weight(T node1, T node2) {
+double ProteinCollection::get_similarity(std::string node1, std::string node2) {
 	/*Returns weight of the edge connecting two existing and directly connected nodes.
 	 *If not connected, returns 0.0*/
 	if (!are_connected(node1, node2)) return 0.0;
@@ -88,36 +83,33 @@ double UndirectedEdgeWeightedGraph<T>::get_edge_weight(T node1, T node2) {
 	return adj[x][y];
 }
 
-template <typename T>
-int UndirectedEdgeWeightedGraph<T>::get_number_nodes() {
+int ProteinCollection::get_number_proteins() {
 	return nodes.size();
 }
 
-template <typename T>
-std::vector<std::vector<T> > UndirectedEdgeWeightedGraph<T>::connected_components(double weight) {
+std::vector<std::vector<std::string> > ProteinCollection::connected_components(double weight) {
 	/*Returns vector of connected components where each position is a vector of nodes in the
 	/*same component*/
 
-	std::vector<std::vector<T> > components;
-	for(typename std::map<T, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	std::vector<std::vector<std::string> > components;
+	for(typename std::map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 		(it->second).visited = 0;
 
-	for(typename std::map<T, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	for(typename std::map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 		if (!(it->second).visited)
 			//For every unvisited node, runs DFS to get all connected nodes
 			DFS_vector_fill(it, components, weight);
 	return components;
 }
 
-template <typename T>
-void UndirectedEdgeWeightedGraph<T>::DFS_vector_fill(typename std::map<T, node_info_t>::iterator n,
-											   	  std::vector<std::vector<T> > &components,
+void ProteinCollection::DFS_vector_fill(typename std::map<std::string, node_info_t>::iterator n,
+											   	  std::vector<std::vector<std::string> > &components,
 												  double weight) {
 	/*Runs DFS from a starting node "n" and adds a vector to components with all the nodes in the same
 	/*connected component as n*/
 
-	std::stack<typename std::map<T, node_info_t>::iterator> my_stack;
-	std::vector<T> aux;
+	std::stack<typename std::map<std::string, node_info_t>::iterator> my_stack;
+	std::vector<std::string> aux;
 	my_stack.push(n);
 	while (!my_stack.empty()) {
 		n = my_stack.top();
@@ -126,12 +118,9 @@ void UndirectedEdgeWeightedGraph<T>::DFS_vector_fill(typename std::map<T, node_i
 			aux.push_back(n->first);
 			(n->second).visited = 1;
 		}
-		for(typename std::map<T, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+		for(typename std::map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 			if (adj[(n->second).index][(it->second).index] >= weight && !(it->second).visited)
 				my_stack.push(it);
 	}
 	components.push_back(aux);
 }
-
-//Template classes instantiation
-template class UndirectedEdgeWeightedGraph<std::string>;

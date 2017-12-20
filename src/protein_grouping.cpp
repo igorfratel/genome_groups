@@ -12,30 +12,30 @@ void homology_detection(std::string format_file, std::string method, std::string
 }
 
 
-UndirectedEdgeWeightedGraph<std::string> protein_clustering(std::string prot_sim_filename, int num_prot) {
-    /*Receives the protein similarities file and stores them in an undirected edge-weighted graph.
+ProteinCollection protein_clustering(std::string prot_sim_filename, int num_prot) {
+    /*Receives the protein similarities file and stores them in a ProteinCollection.
     /*The similarities file must be in the format "prot1 prot2 sim" in every line
     /*num_prot must be the number of proteins and stringency is the minimum similarity
     /*for two proteins to be considered part of the same cluster*/
 
-    UndirectedEdgeWeightedGraph<std::string> my_graph (num_prot);
+    ProteinCollection my_proteins (num_prot);
     std::ifstream file;
     std::string prot1;
     std::string prot2;
-    std::string weight;
-    double weight_aux;
+    std::string similarity;
+    double similarity_aux;
     file.open(prot_sim_filename.c_str());
     while(std::getline(file, prot1, ' ')) {
         std::getline(file, prot2, ' ');
-        std::getline(file, weight);
-        my_graph.add_node(prot1);
-        my_graph.add_node(prot2);
-        weight_aux = ::atof(weight.c_str());
+        std::getline(file, similarity);
+        my_proteins.add_protein(prot1);
+        my_proteins.add_protein(prot2);
+        similarity_aux = ::atof(similarity.c_str());
 
         //DEBUG
-        //std::cout << prot1 << " " << prot2 << " weight: " << weight_aux << "\n";
-        my_graph.add_edge(prot1, prot2, weight_aux);
+        //std::cout << prot1 << " " << prot2 << " similarity: " << similarity_aux << "\n";
+        my_proteins.connect_proteins(prot1, prot2, similarity_aux);
     }
     file.close();
-    return my_graph;
+    return my_proteins;
 }

@@ -3,6 +3,7 @@
 #include <cstring>
 #include "protein_grouping.h"
 #include "genome_grouping.h"
+#include "ProteinCollection.h"
 #include "cxxopts.hpp"
 
 
@@ -66,7 +67,7 @@ int main(int argc, char *argv[]) {
 	std::string genome_comparing = result["genome_comparing"].as<std::string>();
 	std::string output = result["output"].as<std::string>() ;
 
-	UndirectedEdgeWeightedGraph<std::string> prot_clusters;
+	ProteinCollection prot_clusters;
 
 	if (execution_mode == "full") {
 		//default execution
