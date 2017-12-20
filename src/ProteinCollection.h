@@ -1,35 +1,34 @@
 #ifndef __PROTEIN_COLLECTION_H__
 #define __PROTEIN_COLLECTION_H__
 
-#include <iostream>
 #include <vector>
-#include <string>
-#include <map>
-#include <stack>
 
-/*Undirected edge-weighted graph implementation*/
-class ProteinCollection {
+//Union-Find implementation
+class ProteinCollection{
+    std::vector<int> parent; // parent[i] = parent of i
+    std::vector<int> size;   // size[i] = number of sites in tree rooted at i
+                             // Note: not necessarily correct if i is not a root node
+    int count; // number of components
 
-	typedef struct {
-		int index;
-		int visited;
-	} node_info_t;
+    public:
+        void add_protein();
 
-	std::map<std::string, node_info_t> nodes; //nodes are proteins
-	std::vector<std::vector<double> > adj; //Adjacency matrix
+        void Union(int p, int q);
+        int find(int p);
+        bool connected(int p, int q);
+        int get_count();
 
-	public:
 
-		ProteinCollection();
+        ProteinCollection();
 
 		/*Creates object with known number of proteins to be added*/
-		ProteinCollection(int n_nodes);
+		ProteinCollection(int n);
 
 		/*Adds protein with string identifier*/
 		void add_protein(std::string node);
 
-		/*Adds connection between two existing proteins with given similarity*/
-		void connect_proteins(std::string node1, std::string node2, double weight);
+		/*Adds connection between two existing proteins*/
+		void connect_proteins(std::string node1, std::string node2);
 
 		/*Adds two proteins and connects them with given similarity*/
 		void add_connected_proteins(std::string node1, std::string node2, double weight);
@@ -48,11 +47,8 @@ class ProteinCollection {
 		 *component*/
 		std::vector<std::vector<std::string> > connected_components(double weight);
 
-	private:
+    private:
 
-		/*connected_components auxiliar function*/
-		void DFS_vector_fill(typename std::map<std::string, node_info_t>::iterator n,
-							 std::vector<std::vector<std::string> > &components, double weight);
+
 };
-
 #endif
