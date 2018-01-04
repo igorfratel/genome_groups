@@ -4,9 +4,8 @@
 
 ProteinCollection::ProteinCollection() {}
 
-ProteinCollection::ProteinCollection(int n) { //!!! resize bigger may be better
+ProteinCollection::ProteinCollection(int n) : protein_indexes(n) { //!!! resize bigger may be better
     protein_count = 0;
-    protein_indexes = HashTable(n);
     count = n;
     parent.resize(n);
     size.resize(n);
@@ -60,14 +59,15 @@ void ProteinCollection::connect_proteins(std::string p, std::string q) {
     count--;
 }
 int ProteinCollection::find(std::string p) {
-    int root = protein_indexes.get_value(p);
+    int tmp = protein_indexes.get_value(p);
+    int root = tmp;
     if (root == -1) return -1;
     while (root != parent[root])
         root = parent[root];
-    while (p != root) {
-        int newp = parent[p];
-        parent[p] = root;
-        p = newp;
+    while (tmp != root) {
+        int new_tmp = parent[tmp];
+        parent[tmp] = root;
+        tmp = new_tmp;
     }
     return root;
 }

@@ -1,5 +1,7 @@
 #include "HashTable.h"
 
+HashTable::HashTable(){}
+
 HashTable::HashTable(int n) {
     table.resize(n);
     for(int i = 0; i < n; i++){

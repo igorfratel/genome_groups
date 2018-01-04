@@ -8,6 +8,7 @@ class HashTable {
     std::vector<std::vector<std::pair<std::string,int> > > table;
     std::hash<std::string> hash_function;
     public:
+        HashTable();
         HashTable(int n);
         void insert(std::string key, int value);
         int get_value(std::string key);

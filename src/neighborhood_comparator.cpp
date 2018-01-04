@@ -75,13 +75,13 @@ int main(int argc, char *argv[]) {
 		std::string protein_comparing = result["protein_comparing"].as<std::string>();
 
 		std::cout << "Applying homology detection method...\n";
-		homology_detection(formatted_prot_filename, protein_comparing, prot_sim_filename);
+		homology_detection(formatted_prot_filename, protein_comparing, prot_sim_filename, stringency);
 
 		std::cout << "\nClustering proteins...\n";
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, stringency, output);
+		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, output);
 
 		std::cout << "\nDone!";
 	}
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, stringency, output);
+		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, output);
 
 		std::cout << "\nDone!\n";
 

@@ -1,12 +1,12 @@
 #include "protein_grouping.h"
 
-void homology_detection(std::string format_file, std::string method, std::string prot_sim_filename) {
+void homology_detection(std::string format_file, std::string method, std::string prot_sim_filename, double stringency) {
    /*Receives the user's preferred protein homology/orthology detection method and runs it on a file
     *already formatted to be its input.
     *Writes the results to prot_sim_filename*/
 
     if (method == "nc") {
-        std::string command = "NC_standalone -f " + format_file + " -o " + prot_sim_filename;
+        std::string command = "NC_standalone -f " + format_file + " --nc_thresh " + std::to_string(stringency) + " -o " + prot_sim_filename;
         system(command.c_str()); //I'm using the default threshold and other defaut parameters(!!!)
     }
 }
@@ -34,7 +34,7 @@ ProteinCollection protein_clustering(std::string prot_sim_filename, int num_prot
 
         //DEBUG
         //std::cout << prot1 << " " << prot2 << " similarity: " << similarity_aux << "\n";
-        my_proteins.connect_proteins(prot1, prot2, similarity_aux);
+        my_proteins.connect_proteins(prot1, prot2);
     }
     file.close();
     return my_proteins;
