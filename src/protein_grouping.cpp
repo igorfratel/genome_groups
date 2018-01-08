@@ -1,8 +1,8 @@
 #include "protein_grouping.h"
-
+#include <iostream>
 void homology_detection(std::string format_file, std::string method, std::string prot_sim_filename, double stringency) {
    /*Receives the user's preferred protein homology/orthology detection method and runs it on a file
-    *already formatted to be its input.
+    *already formatted to be its input, only displaying the results above the given stringency.
     *Writes the results to prot_sim_filename*/
 
     if (method == "nc") {
@@ -12,13 +12,12 @@ void homology_detection(std::string format_file, std::string method, std::string
 }
 
 
-ProteinCollection protein_clustering(std::string prot_sim_filename, int num_prot) {
+ProteinCollection protein_clustering(std::string prot_sim_filename) {
     /*Receives the protein similarities file and stores them in a ProteinCollection.
-    /*The similarities file must be in the format "prot1 prot2 sim" in every line
-    /*num_prot must be the number of proteins and stringency is the minimum similarity
-    /*for two proteins to be considered part of the same cluster*/
+     *The similarities file must be in the format "prot1 prot2 sim" in every line
+     *for two proteins to be considered part of the same cluster*/
 
-    ProteinCollection my_proteins (num_prot);
+    ProteinCollection my_proteins;
     std::ifstream file;
     std::string prot1;
     std::string prot2;

@@ -13,7 +13,6 @@ full --> default execution
     -s --prot_sim_filename  
     -f --formatted_prot_filename  
     -p --protein_comparing  
-    -m --num_prot  
     -t --stringency  
     -g --genome_comparing  
     -o --output  
@@ -22,7 +21,6 @@ partial --> Already has the similarities between the proteins.
     -e --execution_mode partial  
     -n --neighborhoods_filename  
     -s --prot_sim_filename  
-    -m --num_prot  
     -t --stringency  
     -g --genome_comparing  
     -o --output  

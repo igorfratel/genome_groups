@@ -1,22 +1,17 @@
 #ifndef __PROTEIN_COLLECTION_H__
 #define __PROTEIN_COLLECTION_H__
 
-#include <vector>
-#include "HashTable.h"
+#include <unordered_map>
 
 //Union-Find implementation
 class ProteinCollection{
-    HashTable protein_indexes;
-    std::vector<int> parent; // parent[i] = parent of i
-    std::vector<int> size;   // size[i] = number of sites in tree rooted at i
-                             // Note: not necessarily correct if i is not a root node
+    std::unordered_map<std::string, std::string> parent; // parent[i] = parent of i
+    std::unordered_map<std::string, int> size;   // size[i] = number of sites in tree rooted at i
+                                                // Note: not necessarily correct if i is not a root node
     int count; // number of components
 
     public:
         ProteinCollection();
-
-		/*Creates object with known number of proteins to be added*/
-		ProteinCollection(int n);
 
 		/*Adds protein with string identifier*/
 		void add_protein(std::string p);
@@ -27,8 +22,8 @@ class ProteinCollection{
 		/*Adds two proteins and connects them.*/
 		void add_connected_proteins(std::string p, std::string q);
 
-		/*Returns true if given proteins are directly connected and false otherwise*/
-		bool are_connected(std::string p, std::string q);
+		/*Returns true 1 given proteins are directly connected and 0 otherwise*/
+		int are_connected(std::string p, std::string q);
 
 		/*Returns similarity value between two existing and directly connected proteins.
 		 *If not connected, returns 0.0*/
@@ -37,13 +32,9 @@ class ProteinCollection{
 		/*Returns number of proteins in object*/
 		int get_number_proteins();
 
-		/*Returns vector of connected components where each position is a vector of nodes in the same
-		 *component*/
-		std::vector<std::vector<std::string> > connected_components(double weight);
-
     private:
         int protein_count;
-        int find(std::string p);
+        std::string find(std::string p);
         int get_count();
 
 

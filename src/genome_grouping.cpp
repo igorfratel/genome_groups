@@ -50,20 +50,11 @@ static std::vector<GenomicNeighborhood> parse_neighborhoods(std::string neighbor
         file.close();
     return neighborhoods;
 }
-static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, ProteinCollection &clusters) {
-  /*Receives two proteins, a ProteinCollection and a threshold value.
-   *If the proteins are connected in the ProteinCollection, return an integer with 100x their similarity (because
-    the Hungarian class only works with integers).
-   *If the proteins aren't connected or if their similarity is smaller than the threshold value, return 0.*/
-  if(clusters.are_connected(my_prot.pid, my_prot2.pid))
-    return 1;
-  return 0;
-}
 
 static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood g1, GenomicNeighborhood g2,
                                                      ProteinCollection &clusters) {
     /*Receives two genomic neighborhoods, g1 and g2, and the ProteinCollection.
-     *Fills an integer matrix where matrix[i][j] is the similarity measure between the i-th protein of g1 and
+     *Fills an integer matrix where matrix[i][j] is 1 if the i-th protein of g1 and
      *the j-th protein of g2 are in the same cluster (connected in the ProteinCollection) and 0 otherwise.*/
 
     int i = 0;
@@ -77,7 +68,7 @@ static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood
     for(GenomicNeighborhood::iterator it = g1.begin(); it != g1.end(); ++it) {
         j = 0;
         for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
-            matrix[i][j] = clustering_value(*it, *it2, clusters);
+            matrix[i][j] = clusters.are_connected(it->pid, it2->pid);
 	        //DEBUG
             //std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
             j++;

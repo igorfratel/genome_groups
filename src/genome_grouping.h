@@ -11,7 +11,7 @@
 
 /*Receives a file containing all the genomic neighborhoods (as output by parse_neighborhood.py),
  *a ProteinCollection and the desired genomic neighborhood clustering method.
- *Writes the similarity between all genomic neighborhoods on the genome_sim_filename
+ *Writes the similarity between all genomic neighborhoods on the genome_sim_filename in
  *the format "organism1 acession1 coordinates1 organism2 acession2 coordinates2 score"*/
 void genome_clustering(std::string neighborhoods_filename, ProteinCollection &clusters,
                        std::string method, std::string genome_sim_filename);

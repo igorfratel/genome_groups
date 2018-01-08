@@ -19,7 +19,6 @@ int main(int argc, char *argv[]) {
 		("s,prot_sim_filename", "File containing pairs of proteins and their similarities", cxxopts::value<std::string>())
 		("f,formatted_prot_filename", "File already formatted as the input for the homology detection method", cxxopts::value<std::string>())
 		("p,protein_comparing", "Method for comparing proteins (default: nc)", cxxopts::value<std::string>()->default_value("nc"))
-		("m,num_prot", "Number of unique proteins", cxxopts::value<int>())
 		("t,stringency", "Minimum similarity required to treat two proteins as a related pair", cxxopts::value<double>())
 		("g,genome_comparing","Method for comparing genomic neighborhoods (default: porthodom method)", cxxopts::value<std::string>()->default_value("porthodom"))
 		("o,output", "Where the neighborhood similarities should be written", cxxopts::value<std::string>())
@@ -41,7 +40,6 @@ int main(int argc, char *argv[]) {
 			    <<"    -s --prot_sim_filename\n"
 			    <<"    -f --formatted_prot_filename\n"
 			    <<"    -p --protein_comparing\n"
-			    <<"    -m --num_prot\n"
 			    <<"    -t --stringency\n"
 			    <<"    -g --genome_comparing\n"
 			    <<"    -o --output\n"
@@ -50,7 +48,6 @@ int main(int argc, char *argv[]) {
 			    <<"    -e --execution_mode partial\n"
 			    <<"    -n --neighborhoods_filename\n"
 			    <<"    -s --prot_sim_filename\n"
-			    <<"    -m --num_prot\n"
 			    <<"    -t --stringency\n"
 			    <<"    -g --genome_comparing\n"
 			    <<"    -o --output\n";
@@ -62,7 +59,6 @@ int main(int argc, char *argv[]) {
 	std::string execution_mode = result["execution_mode"].as<std::string>();
 	std::string neighborhoods_filename = result["neighborhoods_filename"].as<std::string>();
 	std::string prot_sim_filename = result["prot_sim_filename"].as<std::string>();
-	int num_prot = result["num_prot"].as<int>();
 	double stringency = result["stringency"].as<double>();
 	std::string genome_comparing = result["genome_comparing"].as<std::string>();
 	std::string output = result["output"].as<std::string>() ;
@@ -78,7 +74,7 @@ int main(int argc, char *argv[]) {
 		homology_detection(formatted_prot_filename, protein_comparing, prot_sim_filename, stringency);
 
 		std::cout << "\nClustering proteins...\n";
-		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
+		prot_clusters = protein_clustering(prot_sim_filename);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
 		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, output);
@@ -90,7 +86,7 @@ int main(int argc, char *argv[]) {
 		//Already has the similarities between the proteins.
 
 		std::cout << "\nClustering proteins...\n";
-		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
+		prot_clusters = protein_clustering(prot_sim_filename);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
 		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, output);
