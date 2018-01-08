@@ -92,23 +92,23 @@ std::vector<std::vector<std::string> > ProteinCollection::connected_components(d
 	/*same component*/
 
 	std::vector<std::vector<std::string> > components;
-	for(typename std::map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	for(typename std::unordered_map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 		(it->second).visited = 0;
 
-	for(typename std::map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	for(typename std::unordered_map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 		if (!(it->second).visited)
 			//For every unvisited node, runs DFS to get all connected nodes
 			DFS_vector_fill(it, components, weight);
 	return components;
 }
 
-void ProteinCollection::DFS_vector_fill(typename std::map<std::string, node_info_t>::iterator n,
+void ProteinCollection::DFS_vector_fill(typename std::unordered_map<std::string, node_info_t>::iterator n,
 											   	  std::vector<std::vector<std::string> > &components,
 												  double weight) {
 	/*Runs DFS from a starting node "n" and adds a vector to components with all the nodes in the same
 	/*connected component as n*/
 
-	std::stack<typename std::map<std::string, node_info_t>::iterator> my_stack;
+	std::stack<typename std::unordered_map<std::string, node_info_t>::iterator> my_stack;
 	std::vector<std::string> aux;
 	my_stack.push(n);
 	while (!my_stack.empty()) {
@@ -118,7 +118,7 @@ void ProteinCollection::DFS_vector_fill(typename std::map<std::string, node_info
 			aux.push_back(n->first);
 			(n->second).visited = 1;
 		}
-		for(typename std::map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+		for(typename std::unordered_map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 			if (adj[(n->second).index][(it->second).index] >= weight && !(it->second).visited)
 				my_stack.push(it);
 	}

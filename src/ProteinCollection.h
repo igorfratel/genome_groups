@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <stack>
 
 /*Undirected edge-weighted graph implementation*/
@@ -15,7 +15,7 @@ class ProteinCollection {
 		int visited;
 	} node_info_t;
 
-	std::map<std::string, node_info_t> nodes; //nodes are proteins
+	std::unordered_map<std::string, node_info_t> nodes; //nodes are proteins
 	std::vector<std::vector<double> > adj; //Adjacency matrix
 
 	public:
@@ -51,7 +51,7 @@ class ProteinCollection {
 	private:
 
 		/*connected_components auxiliar function*/
-		void DFS_vector_fill(typename std::map<std::string, node_info_t>::iterator n,
+		void DFS_vector_fill(typename std::unordered_map<std::string, node_info_t>::iterator n,
 							 std::vector<std::vector<std::string> > &components, double weight);
 };
 
