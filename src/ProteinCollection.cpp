@@ -8,8 +8,6 @@ ProteinCollection::ProteinCollection(int n_nodes) {
 	/*Creates object with known number of nodes to be added*/
 
 	adj.resize(n_nodes);
-	for(unsigned int i = 0; i < adj.size(); i++)
-		adj[i].resize(n_nodes);
 }
 
 void ProteinCollection::add_protein(std::string node) {
@@ -19,42 +17,32 @@ void ProteinCollection::add_protein(std::string node) {
 	my_node_info.index = nodes.size();
 	my_node_info.visited = 0;
 	nodes.insert(std::make_pair(node, my_node_info));
-
-	if(adj.size() < nodes.size()){
-		adj.resize(adj.size() + 1);
-		adj[adj.size() - 1].resize(adj.size());
-	}
+	if(adj.size() < nodes.size())
+		adj.resize(nodes.size());
 }
 
 void ProteinCollection::connect_proteins(std::string node1, std::string node2, double weight) {
 	/*Adds edge connecting two existing nodes with given weight*/
-
-	int x = (nodes.at(node1)).index;
-	int y = (nodes.at(node2)).index;
-	adj[x][y] = weight;
-	adj[y][x] = weight;
+	node_info_t aux_x;
+	node_info_t aux_y;
+	try { //In case some node does not exist
+		aux_x = (nodes.at(node1));
+		aux_y = (nodes.at(node2));
+	}
+	catch (...) {
+		return;
+	}
+	int x = aux_x.index;
+	int y = aux_y.index;
+	adj[x].push_back(std::make_pair(y, weight));
+	adj[y].push_back(std::make_pair(x, weight));
 }
 
 void ProteinCollection::add_connected_proteins(std::string node1, std::string node2, double weight) {
 	/*Adds two nodes and connects them with given weight*/
-	node_info_t my_node_info1, my_node_info2;
-
-	my_node_info1.index = nodes.size();
-	my_node_info1.visited = 0;
-	nodes.insert(std::make_pair(node1, my_node_info1));
-
-	my_node_info2.index = nodes.size();
-	my_node_info2.visited = 0;
-	nodes.insert(std::make_pair(node2, my_node_info2));
-
-	if(adj.size() < nodes.size()){
-		adj.resize(adj.size() + 2);
-		adj[adj.size() - 1].resize(adj.size());
-		adj[adj.size() - 2].resize(adj.size());
-	}
-
-	adj[my_node_info1.index][my_node_info2.index] = weight;
-	adj[my_node_info2.index][my_node_info1.index] = weight;
+	add_protein(node1);
+	add_protein(node2);
+	connect_proteins(node1, node2, weight);
 }
 
 bool ProteinCollection::are_connected(std::string node1, std::string node2) {
@@ -70,17 +58,41 @@ bool ProteinCollection::are_connected(std::string node1, std::string node2) {
 	}
 	int x = aux_x.index;
 	int y = aux_y.index;
-	if (adj[x][y] > 0) return true;
+	if(adj[x].size() <= adj[y].size())
+		for(int i = 0; i < adj[x].size(); i++)
+			if(adj[x][i].first == y)
+				return true;
+	else
+		for(int i = 0; i < adj[y].size(); i++)
+			if(adj[y][i].first == x)
+				return true;
 	return false;
 }
 
 double ProteinCollection::get_similarity(std::string node1, std::string node2) {
 	/*Returns weight of the edge connecting two existing and directly connected nodes.
 	 *If not connected, returns 0.0*/
-	if (!are_connected(node1, node2)) return 0.0;
-	int x = (nodes.at(node1)).index;
-	int y = (nodes.at(node2)).index;
-	return adj[x][y];
+
+	node_info_t aux_x;
+	node_info_t aux_y;
+	try { //In case some node does not exist
+		aux_x = (nodes.at(node1));
+		aux_y = (nodes.at(node2));
+	}
+	catch (...) {
+		return false;
+	}
+	int x = aux_x.index;
+	int y = aux_y.index;
+	if(adj[x].size() <= adj[y].size())
+		for(int i = 0; i < adj[x].size(); i++)
+			if(adj[x][i].first == y)
+				return adj[x][i].second;
+	else
+		for(int i = 0; i < adj[y].size(); i++)
+			if(adj[y][i].first == x)
+				return adj[y][i].second;
+	return 0.0;
 }
 
 int ProteinCollection::get_number_proteins() {
@@ -118,9 +130,16 @@ void ProteinCollection::DFS_vector_fill(typename std::unordered_map<std::string,
 			aux.push_back(n->first);
 			(n->second).visited = 1;
 		}
-		for(typename std::unordered_map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it)
-			if (adj[(n->second).index][(it->second).index] >= weight && !(it->second).visited)
-				my_stack.push(it);
+		for(typename std::unordered_map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it){
+			if (!(it->second).visited) {
+				for(int i = 0; i < adj[(n->second).index].size(); i++){
+					if(adj[(n->second).index][i].first == (it->second).index && adj[(n->second).index][i].second >= weight) {
+						my_stack.push(it);
+						break;
+					}
+				}
+			}
+		}
 	}
 	components.push_back(aux);
 }
