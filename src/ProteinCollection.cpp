@@ -80,7 +80,7 @@ double ProteinCollection::get_similarity(std::string node1, std::string node2) {
 		aux_y = (nodes.at(node2));
 	}
 	catch (...) {
-		return false;
+		return 0.0;
 	}
 	int x = aux_x.index;
 	int y = aux_y.index;
