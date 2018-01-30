@@ -22,7 +22,8 @@ void ProteinCollection::add_protein(std::string node) {
 
 	if(adj.size() < nodes.size()){
 		adj.resize(adj.size() + 1);
-		adj[adj.size() - 1].resize(adj.size());
+		for(int i = 0; i < adj.size(); i++)
+			adj[i].resize(adj.size());
 	}
 }
 
