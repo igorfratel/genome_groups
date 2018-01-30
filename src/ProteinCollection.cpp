@@ -134,7 +134,7 @@ void ProteinCollection::DFS_vector_fill(typename std::unordered_map<std::string,
 		}
 		for(typename std::unordered_map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it){
 			if (!(it->second).visited) {
-				for(int i = 0; i < adj[(n->second).index].size(); i++){
+				for(unsigned int i = 0; i < adj[(n->second).index].size(); i++){
 					if(adj[(n->second).index][i].first == (it->second).index && adj[(n->second).index][i].second >= weight) {
 						my_stack.push(it);
 						break;
