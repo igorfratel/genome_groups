@@ -58,14 +58,16 @@ bool ProteinCollection::are_connected(std::string node1, std::string node2) {
 	}
 	int x = aux_x.index;
 	int y = aux_y.index;
-	if(adj[x].size() <= adj[y].size())
-		for(int i = 0; i < adj[x].size(); i++)
+	if(adj[x].size() <= adj[y].size()) {
+		for(unsigned int i = 0; i < adj[x].size(); i++)
 			if(adj[x][i].first == y)
 				return true;
-	else
-		for(int i = 0; i < adj[y].size(); i++)
+    }
+	else {
+		for(unsigned int i = 0; i < adj[y].size(); i++)
 			if(adj[y][i].first == x)
 				return true;
+    }
 	return false;
 }
 
@@ -85,11 +87,11 @@ double ProteinCollection::get_similarity(std::string node1, std::string node2) {
 	int x = aux_x.index;
 	int y = aux_y.index;
 	if(adj[x].size() <= adj[y].size())
-		for(int i = 0; i < adj[x].size(); i++)
+		for(unsigned int i = 0; i < adj[x].size(); i++)
 			if(adj[x][i].first == y)
 				return adj[x][i].second;
 	else
-		for(int i = 0; i < adj[y].size(); i++)
+		for(unsigned int i = 0; i < adj[y].size(); i++)
 			if(adj[y][i].first == x)
 				return adj[y][i].second;
 	return 0.0;
