@@ -34,8 +34,8 @@ void ProteinCollection::connect_proteins(std::string node1, std::string node2, d
 	}
 	int x = aux_x.index;
 	int y = aux_y.index;
-	adj[x].push_back(std::make_pair(y, weight));
-	adj[y].push_back(std::make_pair(x, weight));
+	adj[x].insert(std::make_pair(y, weight));
+	adj[y].insert(std::make_pair(x, weight));
 }
 
 void ProteinCollection::add_connected_proteins(std::string node1, std::string node2, double weight) {
@@ -59,16 +59,28 @@ bool ProteinCollection::are_connected(std::string node1, std::string node2) {
 	int x = aux_x.index;
 	int y = aux_y.index;
 	if(adj[x].size() <= adj[y].size()) {
-		for(unsigned int i = 0; i < adj[x].size(); i++)
+		try {
+			adj[x].at(y);
+		}
+		catch(...){
+			return false;
+		}
+		/*for(unsigned int i = 0; i < adj[x].size(); i++)
 			if(adj[x][i].first == y)
-				return true;
+				return true;*/
     }
 	else {
-		for(unsigned int i = 0; i < adj[y].size(); i++)
+		try {
+			adj[y].at(x);
+		}
+		catch(...){
+			return false;
+		}
+		/*for(unsigned int i = 0; i < adj[y].size(); i++)
 			if(adj[y][i].first == x)
-				return true;
+				return true;*/
     }
-	return false;
+	return true;
 }
 
 double ProteinCollection::get_similarity(std::string node1, std::string node2) {
@@ -86,17 +98,30 @@ double ProteinCollection::get_similarity(std::string node1, std::string node2) {
 	}
 	int x = aux_x.index;
 	int y = aux_y.index;
+	double weight;
 	if(adj[x].size() <= adj[y].size()){
-		for(unsigned int i = 0; i < adj[x].size(); i++)
+		try {
+			weight = adj[x].at(y);
+		}
+		catch(...) {
+			return 0.0;
+		}
+		/*for(unsigned int i = 0; i < adj[x].size(); i++)
 			if(adj[x][i].first == y)
-				return adj[x][i].second;
+				return adj[x][i].second;*/
     }
 	else {
-		for(unsigned int i = 0; i < adj[y].size(); i++)
+		try {
+			weight = adj[y].at(x);
+		}
+		catch(...) {
+			return 0.0;
+		}
+		/*for(unsigned int i = 0; i < adj[y].size(); i++)
 			if(adj[y][i].first == x)
-				return adj[y][i].second;
+				return adj[y][i].second;*/
     }
-	return 0.0;
+	return weight;
 }
 
 int ProteinCollection::get_number_proteins() {
@@ -134,14 +159,21 @@ void ProteinCollection::DFS_vector_fill(typename std::unordered_map<std::string,
 			aux.push_back(n->first);
 			(n->second).visited = 1;
 		}
+
 		for(typename std::unordered_map<std::string, node_info_t>::iterator it = nodes.begin(); it != nodes.end(); ++it){
 			if (!(it->second).visited) {
-				for(unsigned int i = 0; i < adj[(n->second).index].size(); i++){
+
+				try {
+					if (adj[(n->second).index].at((it->second).index) >= weight)
+						my_stack.push(it);
+				}
+
+				catch(...){}
+				/*for(unsigned int i = 0; i < adj[(n->second).index].size(); i++){
 					if(adj[(n->second).index][i].first == (it->second).index && adj[(n->second).index][i].second >= weight) {
 						my_stack.push(it);
 						break;
-					}
-				}
+					}*/
 			}
 		}
 	}

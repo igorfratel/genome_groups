@@ -10,9 +10,9 @@ int main() {
 
     int x = 0;
     int y = 0;
-    for(int i = 0; i < 100000000; i++){
-        x = rand()%100000000;
-        y = rand()%100000000;
+    for(int i = 0; i < 177463380; i++){
+        x = rand()%10000;
+        y = rand()%10000;
         my_graph.connect_proteins("protein"+std::to_string(x), "protein"+std::to_string(y), 0.05);
         my_graph.get_similarity("protein"+std::to_string(x), "protein"+std::to_string(y));
     }

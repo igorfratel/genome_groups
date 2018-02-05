@@ -16,7 +16,7 @@ class ProteinCollection {
 	} node_info_t;
 
 	std::unordered_map<std::string, node_info_t> nodes; //nodes are proteins
-	std::vector<std::vector<std::pair<int, double> > > adj; //Adjacency list
+	std::vector<std::unordered_map<int, double> > adj; //Adjacency list
 
 	public:
 

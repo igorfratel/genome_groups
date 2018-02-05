@@ -1,4 +1,4 @@
-#include "ProteinCollection.h"
+#include "../src/ProteinCollection.h"
 
 int main() {
 	ProteinCollection my_graph;
