@@ -49,7 +49,7 @@ void ProteinCollection::add_connected_proteins(std::string node1, std::string no
 	nodes.insert(std::make_pair(node2, my_node_info2));
 
 	if(adj.size() < nodes.size()){
-		adj.resize(adj.size() + 1);
+		adj.resize(nodes.size());
 		for(unsigned int i = 0; i < adj.size(); i++)
 			adj[i].resize(adj.size());
 	}
