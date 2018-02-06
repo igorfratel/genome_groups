@@ -2,7 +2,7 @@ HOW TO RUN:
 
 - 1: ./make  
 - 2: ./python parse_neighborhood.py "file with neighborhoods"  
-- 3: ./neighborhood_comparator <full or partial> <args according to chosen mode>  
+- 3: ./neighborhood_comparer <full or partial> <args according to chosen mode>  
 
 
 ARGUMENTS FOR EACH EXECUTION MODE:  
@@ -26,3 +26,9 @@ partial --> Already has the similarities between the proteins.
     -t --stringency  
     -g --genome_comparing  
     -o --output  
+
+protein scoring methods: nc.
+neighborhood scoring methods: porthodom, porthodomO2.
+
+To add new a neighborhood scoring method: include the file containing the scoring function in genome_grouping.h,
+add a new "if else" clause at the genome_clustering function in the genome_grouping.cpp file comparing the genomic neighborhoods using the new scoring function. Add new files to Makefile.

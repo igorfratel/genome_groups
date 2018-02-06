@@ -50,78 +50,6 @@ static std::vector<GenomicNeighborhood> parse_neighborhoods(std::string neighbor
         file.close();
     return neighborhoods;
 }
-static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, ProteinCollection &clusters,
-                            double stringency) {
-  /*Receives two proteins, a ProteinCollection and a threshold value.
-   *If the proteins are connected in the ProteinCollection, return an integer with 100x their similarity (because
-    the Hungarian class only works with integers).
-   *If the proteins aren't connected or if their similarity is smaller than the threshold value, return 0.*/
-  double similarity = clusters.get_similarity(my_prot.pid, my_prot2.pid);
-  if (similarity >= stringency)
-    return (int)(100*similarity);
-  else
-    return 0;
-
-}
-
-static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood g1, GenomicNeighborhood g2,
-                                                     ProteinCollection &clusters, double stringency) {
-    /*Receives two genomic neighborhoods, g1 and g2, and the ProteinCollection.
-     *Fills an integer matrix where matrix[i][j] is the similarity measure between the i-th protein of g1 and
-     *the j-th protein of g2 are in the same cluster (connected in the ProteinCollection) and 0 otherwise.*/
-
-    int i = 0;
-    int j = 0;
-    std::vector<std::vector<int> > matrix;
-
-    matrix.resize(g1.protein_count());
-    for (unsigned int k = 0; k < matrix.size(); k++)
-        matrix[k].resize(g2.protein_count());
-
-    for(GenomicNeighborhood::iterator it = g1.begin(); it != g1.end(); ++it) {
-        j = 0;
-        for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
-            matrix[i][j] = clustering_value(*it, *it2, clusters, stringency);
-	        //DEBUG
-            //std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
-            j++;
-        }
-        i++;
-    }
-    return matrix;
-}
-
-static double compare_neighborhoods(GenomicNeighborhood g1, GenomicNeighborhood g2,
-                             ProteinCollection &clusters, double stringency) {
-    /*Receives two genomic neighborhoods and a ProteinCollection.
-     *Returns the MWM porthodom score between the two neighborhoods
-     *(Using the hungarian algorithm and the porthodom scoring formula).*/
-
-    double sum_temp = 0;
-    std::map<std::pair<int, int>, int> assignments;
-    std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, stringency);
-    Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
-
-    my_hungarian.solve();
-    assignments = my_hungarian.get_assignments();
-    //DEBUG
-    /*std::cout <<"Assignments between (" << g1.get_accession() << ", " << g1.get_organism() << ") and "
-    << "(" << g2.get_accession() << ", " << g2.get_organism() << "):\n";
-    my_hungarian.print_assignment();
-    my_hungarian.print_cost();
-    fprintf(stderr, "\n");*/
-    //PORTHODOM similarity measure calculation, adapted for genome neighborhoods
-    //The similarity between to neighborhoods is given by the normalized sum of the
-    //similarities between each pair of "assigned" proteins (as given by the Hungarian algorithm)
-    //TO compute:
-    //    1. add the assignment values
-    //    2. divide by the number of proteins in the "largest" genome
-    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
-        sum_temp += ((double)it->second)/100; //Division to undo the multiplication in clustering_value()
-        //DEBUG
-        /*std::cout << "SUM_TEMP: " << sum_temp << "\n";*/
-    return sum_temp/std::max(g1.protein_count(), g2.protein_count());
-}
 
 void genome_clustering(std::string neighborhoods_filename, ProteinCollection &clusters,
                        std::string method, double stringency, std::string genome_sim_filename) {
@@ -129,11 +57,10 @@ void genome_clustering(std::string neighborhoods_filename, ProteinCollection &cl
      *a ProteinCollection and the desired genomic neighborhood clustering method.
      *Writes the similarity between all genomic neighborhoods on the genome_sim_filename in
      *the format "organism1 acession1 coordinates1 organism2 acession2 coordinates2 score"*/
-    /*INCOMPLETE*/
+
     std::ofstream file(genome_sim_filename.c_str());
     std::cout.precision(2); //configure output limiting to 2 decimal points
     std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
-    double score;
 
     //DEBUG print the genomic neighborhoods we are considering
     /*for (int i = 0; i < neighborhoods.size(); i++) {
@@ -145,9 +72,10 @@ void genome_clustering(std::string neighborhoods_filename, ProteinCollection &cl
     }
     std::cout << "\n"*/;
     if (method == "porthodom") {
+        double score;
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
-                score = compare_neighborhoods(neighborhoods[m], neighborhoods[n], clusters, stringency);
+                score = porthodom_scoring(neighborhoods[m], neighborhoods[n], clusters, stringency);
                 file << neighborhoods[m].get_organism() << " " <<
                         neighborhoods[m].get_accession() << " " <<
                         neighborhoods[m].get_cds_string() << " " <<
@@ -157,5 +85,22 @@ void genome_clustering(std::string neighborhoods_filename, ProteinCollection &cl
                         score << "\n";
             }
         }
+    }
+
+    else if (method == "porthodomO2") {
+        double score;
+        for(unsigned int m = 0; m < neighborhoods.size(); m++) {
+            for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
+                score = porthodomO2_scoring(neighborhoods[m], neighborhoods[n], clusters, stringency);
+                file << neighborhoods[m].get_organism() << " " <<
+                        neighborhoods[m].get_accession() << " " <<
+                        neighborhoods[m].get_cds_string() << " " <<
+                        neighborhoods[n].get_organism() << " " <<
+                        neighborhoods[n].get_accession() << " " <<
+                        neighborhoods[n].get_cds_string() << " " <<
+                        score << "\n";
+            }
+        }
+
     }
 }

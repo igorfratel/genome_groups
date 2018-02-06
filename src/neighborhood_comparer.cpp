@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 	/*Main program, coordinates all the modes of execution calling the apropriate functions*/
 
 	/*Dealing with command line arguments*/
-	cxxopts::Options options("neighborhood_comparator", "genomic neighborhood comparison software");
+	cxxopts::Options options("neighborhood_comparer", "genomic neighborhood comparison software");
 	options.add_options()
 		("h, help", "Prints help message")
 		("e,execution_mode", "full or partial execution mode (default: full)", cxxopts::value<std::string>()->default_value("full"))
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 		std::cout << "HOW TO RUN:\n"
 				<< "  - 1: ./make\n"
 				<<"  - 2: ./python parse_neighborhood.py <file with neighborhoods>\n"
-				<<"  - 3: ./neighborhood_comparator <full or partial> <args according to chosen mode>\n\n"
+				<<"  - 3: ./neighborhood_comparer <full or partial> <args according to chosen mode>\n\n"
 
 				<<"ARGUMENTS FOR EACH EXECUTION MODE:\n"
 				<<"  full --> default execution\n"
