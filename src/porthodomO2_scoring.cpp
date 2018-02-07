@@ -48,10 +48,11 @@ double porthodomO2_scoring(GenomicNeighborhood g1, GenomicNeighborhood g2,
     /*Receives two genomic neighborhoods and a ProteinCollection.
      *Returns the MWM_O2 porthodom score between the two neighborhoods
      *(Using the hungarian algorithm and the porthodom scoring formula).*/
-
+    if(g1.protein_count() == 1 || g2.protein_count() == 1) return 0.0;
     double sum_temp = 0;
     std::map<std::pair<int, int>, int> assignments;
     std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, stringency);
+
     Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
 
     my_hungarian.solve();
