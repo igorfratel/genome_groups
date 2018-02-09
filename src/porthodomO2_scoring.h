@@ -12,7 +12,7 @@
 /*Receives two genomic neighborhoods and a ProteinCollection.
  *Returns the MWM_O2 porthodom score between the two neighborhoods
  *(Using the hungarian algorithm and the porthodom scoring formula).*/
-double porthodomO2_scoring(GenomicNeighborhood g1, GenomicNeighborhood g2,
+double porthodomO2_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
                              ProteinCollection &clusters, double stringency);
 
 #endif

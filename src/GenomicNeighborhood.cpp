@@ -2,12 +2,12 @@
 
 typedef std::vector<protein_info_t>::iterator iterator;
 
-GenomicNeighborhood::GenomicNeighborhood (std::string accession_code, std::string organism_name) {
+GenomicNeighborhood::GenomicNeighborhood (const std::string &accession_code, const std::string &organism_name) {
 	this->accession = accession_code;
 	this->organism = organism_name;
 }
 
-void GenomicNeighborhood::add_seed(std::string locus, std::string pid, std::string cds) {
+void GenomicNeighborhood::add_seed(const std::string &locus, const std::string &pid, const std::string &cds) {
 	/*Receives the locus, pid and cds of an anchor/seed protein and adds that info to the object*/
 	protein_info_t my_prot;
 	my_prot.locus = locus;
@@ -18,7 +18,7 @@ void GenomicNeighborhood::add_seed(std::string locus, std::string pid, std::stri
 	seeds.push_back(my_prot);
 }
 
-void GenomicNeighborhood::add_protein(std::string locus, std::string pid, std::string cds) {
+void GenomicNeighborhood::add_protein(const std::string &locus, const std::string &pid, const std::string &cds) {
 	/*Receives the locus, pid and cds of a protein and adds the protein to the object*/
 	protein_info_t my_prot;
 	my_prot.locus = locus;

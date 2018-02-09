@@ -1,11 +1,15 @@
 #include "porthodom_scoring.h"
 
+/**
+ *Receives two proteins, a ProteinCollection and a threshold value.
+ *If the proteins are connected in the ProteinCollection, return an integer with 100x their similarity (because
+ *the Hungarian class only works with integers).
+ *If the proteins aren't connected or if their similarity is smaller than the threshold value, return 0.
+ */
 static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, ProteinCollection &clusters,
                             double stringency) {
-  /*Receives two proteins, a ProteinCollection and a threshold value.
-   *If the proteins are connected in the ProteinCollection, return an integer with 100x their similarity (because
-    the Hungarian class only works with integers).
-   *If the proteins aren't connected or if their similarity is smaller than the threshold value, return 0.*/
+  //DEBUG
+  //std::cout << "clustering value between " << my_prot.pid << " and " << my_prot2.pid << "\n";
   double similarity = clusters.get_similarity(my_prot.pid, my_prot2.pid);
   if (similarity >= stringency)
     return (int)(100*similarity);
@@ -14,25 +18,26 @@ static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, Pro
 
 }
 
-static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood g1, GenomicNeighborhood g2,
+/**
+ *Receives two genomic neighborhoods, g1 and g2, and the ProteinCollection.
+ *Fills an integer matrix where matrix[i][j] is the similarity measure between the i-th protein of g1 and
+ *the j-th protein of g2 are in the same cluster (connected in the ProteinCollection) and 0 otherwise.
+ */
+static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
                                                      ProteinCollection &clusters, double stringency) {
-    /*Receives two genomic neighborhoods, g1 and g2, and the ProteinCollection.
-     *Fills an integer matrix where matrix[i][j] is the similarity measure between the i-th protein of g1 and
-     *the j-th protein of g2 are in the same cluster (connected in the ProteinCollection) and 0 otherwise.*/
 
     int i = 0;
     int j = 0;
-    std::vector<std::vector<int> > matrix;
-
-    matrix.resize(g1.protein_count());
-    for (unsigned int k = 0; k < matrix.size(); k++)
-        matrix[k].resize(g2.protein_count());
+    std::vector<std::vector<int> > matrix(g1.protein_count(), std::vector<int>(g2.protein_count()));
 
     for(GenomicNeighborhood::iterator it = g1.begin(); it != g1.end(); ++it) {
         j = 0;
         for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
+
+            //DEBUG
+            /*std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << "\n";*/
             matrix[i][j] = clustering_value(*it, *it2, clusters, stringency);
-	        //DEBUG
+            //DEBUG
             //std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
             j++;
         }
@@ -41,13 +46,18 @@ static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood
     return matrix;
 }
 
-double porthodom_scoring(GenomicNeighborhood g1, GenomicNeighborhood g2,
+/**
+ *Receives two genomic neighborhoods and a ProteinCollection.
+ *Returns the MWM porthodom score between the two neighborhoods
+ *(Using the hungarian algorithm and the porthodom scoring formula).
+ */
+double porthodom_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
                              ProteinCollection &clusters, double stringency) {
-    /*Receives two genomic neighborhoods and a ProteinCollection.
-     *Returns the MWM porthodom score between the two neighborhoods
-     *(Using the hungarian algorithm and the porthodom scoring formula).*/
 
-    double sum_temp = 0;
+    //DEBUG
+    /*std::cout <<"Comparing (" << g1.get_accession() << ", " << g1.get_organism() << ") and "
+                << "(" << g2.get_accession() << ", " << g2.get_organism() << "):\n";*/
+
     std::map<std::pair<int, int>, int> assignments;
     std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, stringency);
     Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
@@ -66,6 +76,7 @@ double porthodom_scoring(GenomicNeighborhood g1, GenomicNeighborhood g2,
     //TO compute:
     //    1. add the assignment values
     //    2. divide by the number of proteins in the "largest" genome
+    double sum_temp = 0;
     for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
         sum_temp += ((double)it->second)/100; //Division to undo the multiplication in clustering_value()
         //DEBUG

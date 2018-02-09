@@ -1,34 +1,33 @@
-CC = g++
-CFLAGS = -Wall -Wextra -Wpedantic -std=c++11 -I -pg
+CXX := g++
+CXXFLAGS := -std=c++11 -Ofast -msse2 -march=native -Wall -Wextra -Wpedantic -I -pg -g
+LDFLAGS := -g
 
-default: neighborhood_comparer
+all: neighborhood_comparer
 
-neighborhood_comparer: neighborhood_comparer.cpp ProteinCollection.o GenomicNeighborhood.o Hungarian.o\
+neighborhood_comparer: neighborhood_comparer.o ProteinCollection.o GenomicNeighborhood.o Hungarian.o\
 	 			 protein_grouping.o porthodom_scoring.o porthodomO2_scoring.o genome_grouping.o
-	$(CC) neighborhood_comparer.cpp $(CFLAGS) -o neighborhood_comparer ProteinCollection.o GenomicNeighborhood.o\
-	 															 Hungarian.o protein_grouping.o porthodom_scoring.o\
-																 porthodomO2_scoring.o genome_grouping.o
+	$(CXX) $^ -o $@ $(LDFLAGS)
 
-protein_grouping: protein_grouping.cpp protein_grouping.h
-	$(CC) $(CFLAGS) -c protein_grouping
+protein_grouping.o: protein_grouping.cpp protein_grouping.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-genome_grouping: genome_grouping.cpp genome_grouping.h
-	$(CC) $(CFLAGS) -c genome_grouping
+genome_grouping.o: genome_grouping.cpp genome_grouping.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-porthodom_scoring: porthodom_scoring.cpp
-	$(CC) $(CFLAGS) -c porthodom_scoring
+porthodom_scoring.o: porthodom_scoring.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-porthodomO2_scoring: porthodomO2_scoring.cpp
-	$(CC) $(CFLAGS) -c porthodomO2_scoring
+porthodomO2_scoring.o: porthodomO2_scoring.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-ProteinCollection: ProteinCollection.cpp ProteinCollection.h
-	$(CC) $(CFLAGS) -c ProteinCollection
+ProteinCollection.o: ProteinCollection.cpp ProteinCollection.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-GenomicNeighborhood: GenomicNeighborhood.cpp GenomicNeighborhood.h
-	$(CC) $(CFLAGS) -c GenomicNeighborhood
+GenomicNeighborhood.o: GenomicNeighborhood.cpp GenomicNeighborhood.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-Hungarian: Hungarian.cpp Hungarian.h
-	$(CC) $(CFLAGS) -c Hungarian
+Hungarian.o: Hungarian.cpp Hungarian.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	$(RM) neighborhood_comparer *.o *~

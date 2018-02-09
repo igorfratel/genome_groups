@@ -25,19 +25,19 @@ class GenomicNeighborhood {
 
 		/*Receives the cds string in a format like "534..345" and splits it in the two composing numbers*/
 		/*Returns a vector with two positions.*/
-		std::vector<int> parse_cds(std::string cds);
+		std::vector<int> parse_cds(const std::string cds);
 
 
 	public:
 		typedef std::vector<protein_info_t>::iterator iterator;
 
-		GenomicNeighborhood (std::string acession_code, std::string organism_name);
+		GenomicNeighborhood (const std::string &acession_code, const std::string &organism_name);
 
 		/*Receives the locus, pid and cds of an anchor/seed protein and adds that info to the object*/
-		void add_seed(std::string locus, std::string pid, std::string cds);
+		void add_seed(const std::string &locus, const std::string &pid, const std::string &cds);
 
 		/*Receives the locus, pid and cds of a protein and adds the protein to the object*/
-		void add_protein(std::string locus, std::string pid, std::string cds);
+		void add_protein(const std::string &locus, const std::string &pid, const std::string &cds);
 
 		/*Returns genomic neighborhood accession code*/
 		std::string get_accession();

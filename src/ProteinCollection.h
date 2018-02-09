@@ -10,39 +10,36 @@
 /*Undirected edge-weighted graph with adjacency lists implementation*/
 class ProteinCollection {
 
-	typedef struct {
-		int index;
-		int visited;
-	} node_info_t;
+	struct node_info_t {
+		size_t index;
+		bool visited;
+	};
 
 	std::unordered_map<std::string, node_info_t> nodes; //nodes are proteins
-	std::vector<std::unordered_map<int, double> > adj; //Adjacency list
+	std::vector<std::unordered_map<int, double>> adj; //Adjacency list
 
 	public:
 
-		ProteinCollection();
+		ProteinCollection() = default;
 
 		/*Creates object with known number of proteins to be added*/
-		ProteinCollection(int n_nodes);
+		ProteinCollection(size_t n_nodes);
 
 		/*Adds protein with string identifier*/
-		void add_protein(std::string node);
+		void add_protein(const std::string& node);
 
 		/*Adds connection between two existing proteins with given similarity*/
-		void connect_proteins(std::string node1, std::string node2, double weight);
+		void connect_proteins(const std::string& node1, const std::string& node2, double weight);
 
 		/*Adds two proteins and connects them with given similarity*/
-		void add_connected_proteins(std::string node1, std::string node2, double weight);
+		void add_connected_proteins(const std::string& node1, const std::string& node2, double weight);
 
 		/*Returns true if given proteins are directly connected and false otherwise*/
-		bool are_connected(std::string node1, std::string node2);
+		bool are_connected(const std::string& node1, const std::string& node2);
 
 		/*Returns similarity value between two existing and directly connected proteins.
 		 *If not connected, returns 0.0*/
-		double get_similarity(std::string node1, std::string node2);
-
-		/*Returns number of proteins in object*/
-		int get_number_proteins();
+		double get_similarity(const std::string& node1, const std::string& node2);
 
 		/*Returns vector of connected components where each position is a vector of nodes in the same
 		 *component*/
