@@ -16,7 +16,6 @@ ProteinCollection::ProteinCollection(size_t n_nodes)
 void ProteinCollection::add_protein(const std::string& node) {
 	auto new_id = nodes.size();
 	nodes.emplace(node, node_info_t { new_id, false });
-	adj.emplace_back();
 }
 
 /**

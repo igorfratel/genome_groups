@@ -8,7 +8,7 @@
 #include "porthodom_scoring.h"
 #include "porthodomO2_scoring.h"
 
-/*Receives a file containing all the genomic neighborhoods (as output by parse_neighborhood.py),
+/*Receives a file containing all the genomic neighborhoods.
  *a ProteinCollection and the desired genomic neighborhood clustering method.
  *Writes the similarity between all genomic neighborhoods on the genome_sim_filename
  *the format "organism1 acession1 coordinates1 organism2 acession2 coordinates2 score"*/
