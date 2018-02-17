@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <string>
+#include <cstdlib>
 #include "GenomicNeighborhood.h"
 #include "ProteinCollection.h"
 #include "porthodom_scoring.h"

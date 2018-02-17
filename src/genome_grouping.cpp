@@ -32,6 +32,10 @@ static std::vector<std::string> split(const std::string& in, const std::string& 
      std::vector<GenomicNeighborhood> neighborhoods;
 
      file.open(neighborhoods_filename.c_str());
+     if (file.fail()) {
+         std::cerr << "ERROR: trouble opening the neighborhoods file\n";
+         exit(1);
+     }
 
      int organism_index = -1;
      while(std::getline(file, line)) {

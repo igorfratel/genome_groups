@@ -2,9 +2,7 @@
 
 /**
  *Receives two pairs of proteins, a ProteinCollection and a threshold value.
- *OLD: If the proteins are connected in the ProteinCollection, return an integer with 100x their similarity (because
- *the Hungarian class only works with integers).
- *If the proteins aren't connected or if their similarity is smaller than the threshold value, return 0.
+ *The score returned is the average of the similarities between the pairs.
  */
 static int clustering_value(protein_info_t prot_g1_1, protein_info_t prot_g1_2, protein_info_t prot_g2_1,
                             protein_info_t prot_g2_2, ProteinCollection &clusters, double stringency) {
@@ -34,8 +32,6 @@ static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood
         j = 0;
         for(GenomicNeighborhood::iterator it2 = g2.begin(), it2_last = --g2.end(); it2 != it2_last; ++it2) {
             matrix[i][j] = clustering_value(*it, *(std::next(it)), *it2, *(std::next(it2)), clusters, stringency);
-	        //DEBUG
-            //std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
             j++;
         }
         i++;
@@ -46,7 +42,7 @@ static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood
 /**
  *Receives two genomic neighborhoods and a ProteinCollection.
  *Returns the MWM_O2 porthodom score between the two neighborhoods
- *(Using the hungarian algorithm and the porthodom scoring formula).
+ *(Using the hungarian algorithm and the porthodom scoring formula that considers protein order).
  */
 double porthodomO2_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2, ProteinCollection &clusters,
                            double stringency) {

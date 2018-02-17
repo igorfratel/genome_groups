@@ -27,7 +27,13 @@ ProteinCollection protein_clustering(const std::string &prot_sim_filename, unsig
     std::string prot1;
     std::string prot2;
     std::string similarity;
+
     file.open(prot_sim_filename.c_str());
+    if (file.fail()) {
+        std::cerr << "ERROR: trouble opening the protein similarities file\n";
+        exit(1);
+    }
+
     while(std::getline(file, prot1, ' ')) {
         std::getline(file, prot2, ' ');
         std::getline(file, similarity);
