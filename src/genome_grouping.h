@@ -1,7 +1,6 @@
 #ifndef __GENOME_GROUPING_H__
 #define __GENOME_GROUPING_H__
 
-#include <mutex>
 #include <fstream>
 #include <string>
 #include <cstdlib>
