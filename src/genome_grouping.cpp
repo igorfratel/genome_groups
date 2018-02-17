@@ -87,15 +87,21 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
     }
     std::cout << "\n"*/;
     if (method == "porthodom") {
+        std::mutex mtx;
+        std::vector<double> parallel_results(neighborhoods.size());
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
+            #pragma omp parallel for
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
+                parallel_results[n] = porthodom_scoring(neighborhoods[m], neighborhoods[n], clusters, stringency);
+                mtx.lock();
                 file << neighborhoods[m].get_organism() << " " <<
                         neighborhoods[m].get_accession() << " " <<
                         neighborhoods[m].get_cds_string() << " " <<
                         neighborhoods[n].get_organism() << " " <<
                         neighborhoods[n].get_accession() << " " <<
                         neighborhoods[n].get_cds_string() << " " <<
-                        porthodom_scoring(neighborhoods[m], neighborhoods[n], clusters, stringency) << "\n";
+                        parallel_results[n] << "\n";
+                mtx.unlock();
             }
         }
     }
