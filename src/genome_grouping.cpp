@@ -70,7 +70,7 @@ static std::vector<std::string> split(const std::string& in, const std::string& 
  *the format "acession1 coordinates1 acession2 coordinates2 score".
  */
 void genome_clustering(const std::string &neighborhoods_filename, ProteinCollection &clusters,
-                       const std::string &method, double stringency, const std::string &genome_sim_filename,
+                       const std::string &method, double prot_stringency, double neigh_stringency, const std::string &genome_sim_filename,
                        const std::string &pairings_filename) {
 
     std::ofstream output_file(genome_sim_filename.c_str());
@@ -90,21 +90,25 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
     if (method == "porthodom") {
         std::map<std::pair<int,int>, int> assignments;
         double sum_temp;
+        double score;
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
-
                 sum_temp = 0;
-                assignments = porthodom_scoring(neighborhoods[m], neighborhoods[n], clusters, stringency);
+                assignments = porthodom_scoring(neighborhoods[m], neighborhoods[n], clusters, prot_stringency);
+
                 for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
                     sum_temp += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
 
+                score = sum_temp/std::max(neighborhoods[m].protein_count(), neighborhoods[n].protein_count());
+
+                if (score < neigh_stringency) continue;
                 output_file << neighborhoods[m].get_accession() << "\t" <<
                         neighborhoods[m].get_first_cds() << "\t" <<
                         neighborhoods[m].get_last_cds() << "\t" <<
                         neighborhoods[n].get_accession() << "\t" <<
                         neighborhoods[n].get_first_cds() << "\t" <<
                         neighborhoods[n].get_last_cds() << "\t" <<
-                        sum_temp/std::max(neighborhoods[m].protein_count(), neighborhoods[n].protein_count()) << "\n";
+                        score << "\n";
 
                 pairings_file << ">" << neighborhoods[m].get_accession() << "\t" <<
                         neighborhoods[m].get_first_cds() << "\t" <<
@@ -134,7 +138,7 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
                         neighborhoods[n].get_accession() << "\t" <<
                         neighborhoods[n].get_first_cds() << "\t" <<
                         neighborhoods[n].get_last_cds() << "\t" <<
-                        porthodomO2_scoring(neighborhoods[m], neighborhoods[n], clusters, stringency) << "\n";
+                        porthodomO2_scoring(neighborhoods[m], neighborhoods[n], clusters, prot_stringency) << "\n";
             }
         }
 
