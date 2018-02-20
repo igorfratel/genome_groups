@@ -10,7 +10,7 @@ static int clustering_value(protein_info_t prot_g1_1, protein_info_t prot_g1_2, 
   double result = (clusters.get_similarity(prot_g1_1.pid, prot_g2_1.pid) +
                    clusters.get_similarity(prot_g1_2.pid, prot_g2_2.pid))/2;
   if (result >= stringency) //Should I check if both similarities are greater and then apply the mean? !!!
-    return (int)(100*result);
+    return (int)(1000000*result);
   else
     return 0;
 
@@ -57,8 +57,8 @@ double porthodomO2_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2, Pro
     my_hungarian.solve();
     assignments = my_hungarian.get_assignments();
     //DEBUG
-    /*std::cout <<"Assignments between (" << g1.get_accession() << ", " << g1.get_organism() << ") and "
-    << "(" << g2.get_accession() << ", " << g2.get_organism() << "):\n";
+    /*std::cout <<"Assignments between (" << g1.get_accession() << ", ) and "
+    << "(" << g2.get_accession() << ", ):\n";
     my_hungarian.print_assignment();
     my_hungarian.print_cost();
     fprintf(stderr, "\n");*/
@@ -70,7 +70,7 @@ double porthodomO2_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2, Pro
     //    2. divide by the number of proteins in the "largest" genome
     double sum_temp = 0;
     for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
-        sum_temp += ((double)it->second)/100; //Division to undo the multiplication in clustering_value()
+        sum_temp += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
         //DEBUG
         /*std::cout << "SUM_TEMP: " << sum_temp << "\n";*/
     return sum_temp/std::max(g1.protein_count(), g2.protein_count());

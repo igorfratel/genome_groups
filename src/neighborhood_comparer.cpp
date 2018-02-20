@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
 		("t,stringency", "Minimum similarity required to treat two proteins as a related pair", cxxopts::value<double>())
 		("g,genome_comparing","Method for comparing genomic neighborhoods (default: porthodom method)", cxxopts::value<std::string>()->default_value("porthodom"))
 		("o,output", "Where the neighborhood similarities should be written", cxxopts::value<std::string>())
+		("a,pairings_filename", "Where the chosen pairings between proteins in the neighborhoods should be written", cxxopts::value<std::string>())
 		;
 
 	auto result = options.parse(argc, argv);
@@ -45,6 +46,7 @@ int main(int argc, char *argv[]) {
 			    <<"    -t --stringency\n"
 			    <<"    -g --genome_comparing\n"
 			    <<"    -o --output\n"
+				<<"    -a --pairings_filename\n"
 
 				<<"  partial --> Already has the similarities between the proteins.\n"
 			    <<"    -e --execution_mode partial\n"
@@ -53,7 +55,8 @@ int main(int argc, char *argv[]) {
 			    <<"    -m --num_prot\n"
 			    <<"    -t --stringency\n"
 			    <<"    -g --genome_comparing\n"
-			    <<"    -o --output\n";
+			    <<"    -o --output\n"
+				<<"-a --pairings_filename\n";
 
 		return 0;
 	}
@@ -66,6 +69,7 @@ int main(int argc, char *argv[]) {
 	double stringency = result["stringency"].as<double>();
 	std::string genome_comparing = result["genome_comparing"].as<std::string>();
 	std::string output = result["output"].as<std::string>() ;
+	std::string pairings_filename = result["pairings_filename"].as<std::string>();
 
 	ProteinCollection prot_clusters;
 
@@ -81,7 +85,7 @@ int main(int argc, char *argv[]) {
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, stringency, output);
+		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, stringency, output, pairings_filename);
 
 		std::cout << "\nDone!";
 	}
@@ -93,7 +97,7 @@ int main(int argc, char *argv[]) {
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, stringency, output);
+		genome_clustering(neighborhoods_filename, prot_clusters, genome_comparing, stringency, output, pairings_filename);
 
 		std::cout << "\nDone!\n";
 

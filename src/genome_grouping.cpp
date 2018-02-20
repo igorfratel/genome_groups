@@ -41,13 +41,12 @@ static std::vector<std::string> split(const std::string& in, const std::string& 
      while(std::getline(file, line)) {
          split_line = split(line, " \t");
 
- 		if (split_line[0] == "ORGANISM") { //beginning of organism
+         if (split_line[0] == "ORGANISM") { //beginning of organism
              organism_index++;
              for (unsigned int accession_index = 0; accession_index < split_line.size(); accession_index++){ //find index of accession code
                  if (split_line[accession_index] == "accession") {
                      accession_index += 3;
-                     neighborhoods.emplace_back(GenomicNeighborhood(split_line[accession_index], split_line[1] + " " +
-                                                split_line[2]));
+                     neighborhoods.emplace_back(GenomicNeighborhood(split_line[accession_index]));
                      break;
                 }
              }
@@ -68,18 +67,20 @@ static std::vector<std::string> split(const std::string& in, const std::string& 
  *Receives a file containing all the genomic neighborhoods,
  *a ProteinCollection and the desired genomic neighborhood clustering method.
  *Writes the similarity between all genomic neighborhoods on the genome_sim_filename in
- *the format "organism1 acession1 coordinates1 organism2 acession2 coordinates2 score".
+ *the format "acession1 coordinates1 acession2 coordinates2 score".
  */
 void genome_clustering(const std::string &neighborhoods_filename, ProteinCollection &clusters,
-                       const std::string &method, double stringency, const std::string &genome_sim_filename) {
+                       const std::string &method, double stringency, const std::string &genome_sim_filename,
+                       const std::string &pairings_filename) {
 
-    std::ofstream file(genome_sim_filename.c_str());
-    std::cout.precision(2); //configure output limiting to 2 decimal points
+    std::ofstream output_file(genome_sim_filename.c_str());
+    std::ofstream pairings_file(pairings_filename.c_str());
+
     std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
 
     //DEBUG print the genomic neighborhoods we are considering
     /*for (int i = 0; i < neighborhoods.size(); i++) {
-        std::cout << neighborhoods[i].get_accession() << " " << neighborhoods[i].get_organism() <<
+        std::cout << neighborhoods[i].get_accession() << " "  <<
                      " " << neighborhoods[i].protein_count() << "\n";
         for (GenomicNeighborhood::iterator it = neighborhoods[i].begin(); it != neighborhoods[i].end(); ++it) {
             std::cout << it->pid << " " << it->locus << " " << it->cds << "\n";
@@ -87,15 +88,39 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
     }
     std::cout << "\n"*/;
     if (method == "porthodom") {
+        std::map<std::pair<int,int>, int> assignments;
+        double sum_temp;
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
-                file << neighborhoods[m].get_organism() << " " <<
-                        neighborhoods[m].get_accession() << " " <<
-                        neighborhoods[m].get_cds_string() << " " <<
-                        neighborhoods[n].get_organism() << " " <<
-                        neighborhoods[n].get_accession() << " " <<
-                        neighborhoods[n].get_cds_string() << " " <<
-                        porthodom_scoring(neighborhoods[m], neighborhoods[n], clusters, stringency) << "\n";
+
+                sum_temp = 0;
+                assignments = porthodom_scoring(neighborhoods[m], neighborhoods[n], clusters, stringency);
+                for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
+                    sum_temp += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
+
+                output_file << neighborhoods[m].get_accession() << "\t" <<
+                        neighborhoods[m].get_first_cds() << "\t" <<
+                        neighborhoods[m].get_last_cds() << "\t" <<
+                        neighborhoods[n].get_accession() << "\t" <<
+                        neighborhoods[n].get_first_cds() << "\t" <<
+                        neighborhoods[n].get_last_cds() << "\t" <<
+                        sum_temp/std::max(neighborhoods[m].protein_count(), neighborhoods[n].protein_count()) << "\n";
+
+                pairings_file << ">" << neighborhoods[m].get_accession() << "\t" <<
+                        neighborhoods[m].get_first_cds() << "\t" <<
+                        neighborhoods[m].get_last_cds() << "\t" <<
+                        neighborhoods[n].get_accession() << "\t" <<
+                        neighborhoods[n].get_first_cds() << "\t" <<
+                        neighborhoods[n].get_last_cds() << "\n";
+
+                for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it){
+                    pairings_file << neighborhoods[m].get_pid(it->first.first) << "\t" <<
+                                     neighborhoods[n].get_pid(it->first.second) << "\t" <<
+                                     ((double)it->second)/1000000 << "\n";
+                }
+
+
+
             }
         }
     }
@@ -103,12 +128,12 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
     else if (method == "porthodomO2") {
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
-                file << neighborhoods[m].get_organism() << " " <<
-                        neighborhoods[m].get_accession() << " " <<
-                        neighborhoods[m].get_cds_string() << " " <<
-                        neighborhoods[n].get_organism() << " " <<
-                        neighborhoods[n].get_accession() << " " <<
-                        neighborhoods[n].get_cds_string() << " " <<
+                output_file << neighborhoods[m].get_accession() << "\t" <<
+                        neighborhoods[m].get_first_cds() << "\t" <<
+                        neighborhoods[m].get_last_cds() << "\t" <<
+                        neighborhoods[n].get_accession() << "\t" <<
+                        neighborhoods[n].get_first_cds() << "\t" <<
+                        neighborhoods[n].get_last_cds() << "\t" <<
                         porthodomO2_scoring(neighborhoods[m], neighborhoods[n], clusters, stringency) << "\n";
             }
         }

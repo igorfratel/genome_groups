@@ -2,9 +2,8 @@
 
 typedef std::vector<protein_info_t>::iterator iterator;
 
-GenomicNeighborhood::GenomicNeighborhood (const std::string &accession_code, const std::string &organism_name) {
+GenomicNeighborhood::GenomicNeighborhood (const std::string &accession_code) {
 	this->accession = accession_code;
-	this->organism = organism_name;
 }
 
 void GenomicNeighborhood::add_seed(const std::string &locus, const std::string &pid, const std::string &cds) {
@@ -41,25 +40,22 @@ std::vector<int> GenomicNeighborhood::parse_cds(std::string cds) {
     return cds_array;
 }
 
-std::vector<int> GenomicNeighborhood::get_cds() {
-	/*Returns vector containing the first and last coordinates of the genomic neighborhood*/
-	std::vector<int> cds_vector;
-	cds_vector.push_back(proteins[0].cds_begin);
-	cds_vector.push_back(proteins.back().cds_end);
-	return cds_vector;
+int GenomicNeighborhood::get_first_cds() {
+	/*Returns the first coordinate of the genomic neighborhood*/
+	return proteins[0].cds_begin;
 }
 
-std::string GenomicNeighborhood::get_cds_string() {
-	/*Returns vector containing the first and last coordinates of the genomic neighborhood
-	 *in a string "43434..5654" format*/
-	std::vector<int> cds_vector = get_cds();
-	std::string cds = std::to_string(cds_vector[0]) + ".." + std::to_string(cds_vector[1]);
-	return cds;
+int GenomicNeighborhood::get_last_cds() {
+	/*Returns the last coordinate of the genomic neighborhood*/
+	return proteins.back().cds_end;
+}
+
+std::string GenomicNeighborhood::get_pid(int index) {
+	if ((unsigned int)index >= proteins.size()) return ".";
+	return proteins[index].pid;
 }
 
 std::string GenomicNeighborhood::get_accession() {return accession;}
-
-std::string GenomicNeighborhood::get_organism() {return organism;}
 
 std::vector<protein_info_t> GenomicNeighborhood::get_seeds() {return seeds;}
 

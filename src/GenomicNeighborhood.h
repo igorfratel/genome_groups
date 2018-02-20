@@ -19,7 +19,6 @@ class GenomicNeighborhood {
 
 	private:
 		std::string accession;
-		std::string organism;
 		std::vector<protein_info_t> seeds;
 		std::vector<protein_info_t> proteins;
 
@@ -31,7 +30,7 @@ class GenomicNeighborhood {
 	public:
 		typedef std::vector<protein_info_t>::iterator iterator;
 
-		GenomicNeighborhood (const std::string &acession_code, const std::string &organism_name);
+		GenomicNeighborhood (const std::string &acession_code);
 
 		/*Receives the locus, pid and cds of an anchor/seed protein and adds that info to the object*/
 		void add_seed(const std::string &locus, const std::string &pid, const std::string &cds);
@@ -42,21 +41,20 @@ class GenomicNeighborhood {
 		/*Returns genomic neighborhood accession code*/
 		std::string get_accession();
 
-		/*Returns name of the genomic neighborhood's organism*/
-		std::string get_organism();
-
 		/*Returns anchor/seed proteins*/
 		std::vector<protein_info_t> get_seeds();
+
+		/*Receives an index and returns the corresponding protein in the neighborhood sequence*/
+		std::string get_pid(int index);
 
 		/*Returns number of proteins in the genomic neighborhood*/
 		int protein_count();
 
-		/*Returns vector containing the first and last coordinates of the genomic neighborhood*/
-		std::vector<int> get_cds();
+		/*Returns the first coordinate of the genomic neighborhood*/
+		int get_first_cds();
 
-		/*Returns vector containing the first and last coordinates of the genomic neighborhood
-		*in a string "43434..5654" format*/
-		std::string get_cds_string();
+		/*Returns the last coordinate of the genomic neighborhood*/
+		int get_last_cds();
 
 		/*Iterator for protein_info_t types, in the order that they were inserted in the object*/
 		iterator begin();

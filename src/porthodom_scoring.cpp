@@ -12,7 +12,7 @@ static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, Pro
   //std::cout << "clustering value between " << my_prot.pid << " and " << my_prot2.pid << "\n";
   double similarity = clusters.get_similarity(my_prot.pid, my_prot2.pid);
   if (similarity >= stringency)
-    return (int)(100*similarity);
+    return (int)(1000000*similarity);
   else
     return 0;
 
@@ -51,12 +51,12 @@ static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood
  *Returns the MWM porthodom score between the two neighborhoods
  *(Using the hungarian algorithm and the porthodom scoring formula).
  */
-double porthodom_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
+std::map<std::pair<int, int>, int> porthodom_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
                              ProteinCollection &clusters, double stringency) {
 
     //DEBUG
-    /*std::cout <<"Comparing (" << g1.get_accession() << ", " << g1.get_organism() << ") and "
-                << "(" << g2.get_accession() << ", " << g2.get_organism() << "):\n";*/
+    /*std::cout <<"Comparing (" << g1.get_accession() << ") and "
+                << "(" << g2.get_accession() << ", ):\n";*/
 
     std::map<std::pair<int, int>, int> assignments;
     std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, stringency);
@@ -64,22 +64,5 @@ double porthodom_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
 
     my_hungarian.solve();
     assignments = my_hungarian.get_assignments();
-    //DEBUG
-    /*std::cout <<"Assignments between (" << g1.get_accession() << ", " << g1.get_organism() << ") and "
-    << "(" << g2.get_accession() << ", " << g2.get_organism() << "):\n";
-    my_hungarian.print_assignment();
-    my_hungarian.print_cost();
-    fprintf(stderr, "\n");*/
-    //PORTHODOM similarity measure calculation, adapted for genome neighborhoods
-    //The similarity between to neighborhoods is given by the normalized sum of the
-    //similarities between each pair of "assigned" proteins (as given by the Hungarian algorithm)
-    //TO compute:
-    //    1. add the assignment values
-    //    2. divide by the number of proteins in the "largest" genome
-    double sum_temp = 0;
-    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
-        sum_temp += ((double)it->second)/100; //Division to undo the multiplication in clustering_value()
-        //DEBUG
-        /*std::cout << "SUM_TEMP: " << sum_temp << "\n";*/
-    return sum_temp/std::max(g1.protein_count(), g2.protein_count());
+    return assignments;
 }

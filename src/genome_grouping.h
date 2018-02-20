@@ -12,8 +12,9 @@
 /*Receives a file containing all the genomic neighborhoods.
  *a ProteinCollection and the desired genomic neighborhood clustering method.
  *Writes the similarity between all genomic neighborhoods on the genome_sim_filename
- *the format "organism1 acession1 coordinates1 organism2 acession2 coordinates2 score"*/
+ *the format "acession1 coordinates1 acession2 coordinates2 score"*/
 void genome_clustering(const std::string &neighborhoods_filename, ProteinCollection &clusters,
-                       const std::string &method, double stringency, const std::string &genome_sim_filename);
+                       const std::string &method, double stringency, const std::string &genome_sim_filename,
+                       const std::string &pairings_filename);
 
 #endif

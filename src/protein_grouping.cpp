@@ -42,7 +42,7 @@ ProteinCollection protein_clustering(const std::string &prot_sim_filename, unsig
 
         //DEBUG
         //std::cout << prot1 << " " << prot2 << " similarity: " << similarity_aux << "\n";
-        my_proteins.connect_proteins(prot1, prot2, std::atof(similarity.c_str()));
+        my_proteins.connect_proteins(prot1, prot2, std::stod(similarity));
     }
     file.close();
     return my_proteins;
