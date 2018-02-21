@@ -23,8 +23,8 @@ int main(int argc, char *argv[]) {
 		("t,prot_stringency", "Minimum similarity required to treat two proteins as a related pair", cxxopts::value<double>()->default_value("0.0"))
 		("r,neigh_stringency", "Minimum threshold to display the similarity between two neighborhoods", cxxopts::value<double>()->default_value("0.0"))
 		("g,genome_comparing","Method for comparing genomic neighborhoods (default: porthodom method)", cxxopts::value<std::string>()->default_value("porthodom"))
-		("o,output", "Where the neighborhood similarities should be written", cxxopts::value<std::string>())
-		("a,pairings_filename", "Where the chosen pairings between proteins in the neighborhoods should be written", cxxopts::value<std::string>())
+		("o,output", "Where the neighborhood similarities should be written", cxxopts::value<std::string>()->default_value("-"))
+		("a,pairings_filename", "Where the chosen pairings between proteins in the neighborhoods should be written", cxxopts::value<std::string>()->default_value("&"))
 		;
 
 	auto result = options.parse(argc, argv);

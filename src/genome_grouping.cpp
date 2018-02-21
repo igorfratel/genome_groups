@@ -73,20 +73,18 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
                        const std::string &method, double prot_stringency, double neigh_stringency, const std::string &genome_sim_filename,
                        const std::string &pairings_filename) {
 
-    std::ofstream output_file(genome_sim_filename.c_str());
-    std::ofstream pairings_file(pairings_filename.c_str());
+    std::ofstream output_file;
+    if(genome_sim_filename == "-")
+        output_file.basic_ios<char>::rdbuf(std::cout.rdbuf());
+    else
+        output_file = std::ofstream(genome_sim_filename.c_str());
+
+    std::ofstream pairings_file;
+    if(pairings_filename != "&") //Dummy filename indicating this option was not chosen
+        pairings_file = std::ofstream(pairings_filename.c_str());
 
     std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
 
-    //DEBUG print the genomic neighborhoods we are considering
-    /*for (int i = 0; i < neighborhoods.size(); i++) {
-        std::cout << neighborhoods[i].get_accession() << " "  <<
-                     " " << neighborhoods[i].protein_count() << "\n";
-        for (GenomicNeighborhood::iterator it = neighborhoods[i].begin(); it != neighborhoods[i].end(); ++it) {
-            std::cout << it->pid << " " << it->locus << " " << it->cds << "\n";
-        }
-    }
-    std::cout << "\n"*/;
     if (method == "porthodom") {
         std::map<std::pair<int,int>, int> assignments;
         double sum_temp;
@@ -94,14 +92,18 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
                 sum_temp = 0;
+                //Edges chosen by the algorithm
                 assignments = porthodom_scoring(neighborhoods[m], neighborhoods[n], clusters, prot_stringency);
 
                 for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
                     sum_temp += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
 
+                //apply the scoring formula
                 score = sum_temp/std::max(neighborhoods[m].protein_count(), neighborhoods[n].protein_count());
 
-                if (score < neigh_stringency) continue;
+                if (score < neigh_stringency) continue; //ignore scores below stringency
+
+                //Writes scores to output_file
                 output_file << neighborhoods[m].get_accession() << "\t" <<
                         neighborhoods[m].get_first_cds() << "\t" <<
                         neighborhoods[m].get_last_cds() << "\t" <<
@@ -110,6 +112,8 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
                         neighborhoods[n].get_last_cds() << "\t" <<
                         score << "\n";
 
+                if (pairings_filename == "&") continue; //Dummy filename indicating this option was not chosen
+                //Writes pairing header to pairings_file
                 pairings_file << ">" << neighborhoods[m].get_accession() << "\t" <<
                         neighborhoods[m].get_first_cds() << "\t" <<
                         neighborhoods[m].get_last_cds() << "\t" <<
@@ -117,6 +121,7 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
                         neighborhoods[n].get_first_cds() << "\t" <<
                         neighborhoods[n].get_last_cds() << "\n";
 
+                //Writes pairings to pairings_file
                 for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it){
                     pairings_file << neighborhoods[m].get_pid(it->first.first) << "\t" <<
                                      neighborhoods[n].get_pid(it->first.second) << "\t" <<

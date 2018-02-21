@@ -16,8 +16,8 @@ full --> default execution
     -t --prot_stringency  "Minimum similarity required to treat two proteins as a related pair (default 0)"  
     -r --neigh_stringency "Minimum threshold to display the similarity between two neighborhoods (default 0)"  
     -g --genome_comparing  "Method for comparing genomic neighborhoods (default: porthodom method)"  
-    -o --output  "Where the neighborhood similarities should be written"  
-    -a --pairings_filename "Where the chosen pairings between proteins in the neighborhoods should be written"  
+    -o --output  "Where the neighborhood similarities should be written (outputs do stdout if the filename is - or if not used)"
+    -a --pairings_filename "Where the chosen pairings between proteins in the neighborhoods should be written (if not specified, does not generate a pairings file)"  
 
 
 partial --> Already has the similarities between the proteins.  
