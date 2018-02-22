@@ -79,7 +79,7 @@ static void output_score(GenomicNeighborhood &g1, GenomicNeighborhood &g2, doubl
  *Prints the chosen protein assignments to the pairings_file
  */
 static void output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                            std::map<std::pair<int, int>,int> assignments, std::ofstream &pairings_file) {
+                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file) {
 
     //Writes header
     pairings_file << ">" << g1.get_accession() << "\t" <<
@@ -93,6 +93,30 @@ static void output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
     for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it){
         pairings_file << g1.get_pid(it->first.first) << "\t" <<
                          g2.get_pid(it->first.second) << "\t" <<
+                         ((double)it->second)/1000000 << "\n";
+    }
+}
+
+/**
+ *Prints the chosen protein assignments to the pairings_file (treats each assignment as a pair of pairs of proteins)
+ */
+static void output_pairingsO2(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
+                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file) {
+
+    //Writes header
+    pairings_file << ">" << g1.get_accession() << "\t" <<
+                            g1.get_first_cds() << "\t" <<
+                            g1.get_last_cds() << "\t" <<
+                            g2.get_accession() << "\t" <<
+                            g2.get_first_cds() << "\t" <<
+                            g2.get_last_cds() << "\n";
+
+    //Writes pairings
+    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it){
+        pairings_file << g1.get_pid(it->first.first) << "\t" <<
+                         g1.get_pid(it->first.first + 1) << "\t" <<
+                         g2.get_pid(it->first.second) << "\t" <<
+                         g2.get_pid(it->first.second + 1) << "\t" <<
                          ((double)it->second)/1000000 << "\n";
     }
 }
@@ -143,17 +167,31 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
     }
 
     else if (method == "porthodomO2") {
+        std::map<std::pair<int,int>, int> assignments;
+        double score;
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
+
+            if(neighborhoods[m].protein_count() == 1) continue; //Ignores neighborhoods with less than 2 proteins
+
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
-                output_file << neighborhoods[m].get_accession() << "\t" <<
-                        neighborhoods[m].get_first_cds() << "\t" <<
-                        neighborhoods[m].get_last_cds() << "\t" <<
-                        neighborhoods[n].get_accession() << "\t" <<
-                        neighborhoods[n].get_first_cds() << "\t" <<
-                        neighborhoods[n].get_last_cds() << "\t" <<
-                        porthodomO2_scoring(neighborhoods[m], neighborhoods[n], clusters, prot_stringency) << "\n";
+
+                if(neighborhoods[n].protein_count() == 1) continue; //Ignores neighborhoods with less than 2 proteins
+
+                //Edges chosen by the algorithm
+                assignments = porthodomO2_assignments(neighborhoods[m], neighborhoods[n], clusters, prot_stringency);
+
+                //apply the scoring formula
+                score = porthodomO2_scoring(assignments,
+                                          std::max(neighborhoods[m].protein_count(), neighborhoods[n].protein_count()) - 1);
+
+                if (score < neigh_stringency) continue; //ignore scores below stringency
+                //Writes scores to output_file
+                output_score(neighborhoods[m], neighborhoods[n], score, output_file);
+
+                if (pairings_filename == "&") continue; //Dummy filename indicating this option was not chosen
+                //Writes pairing to pairings_file
+                output_pairingsO2(neighborhoods[m], neighborhoods[n], assignments, pairings_file);
             }
         }
-
     }
 }

@@ -21,6 +21,7 @@ partial --> Already has the similarities between the proteins.
     -e --execution_mode partial  
     -n --neighborhoods_filename  
     -s --prot_sim_filename  
+    -l --normalize_prot_sim" "Indicates that the protein similarities file should be normalized"
     -m --num_prot  
     -t --prot_stringency  
     -r --neigh_stringency "Minimum threshold to display the similarity between two neighborhoods"

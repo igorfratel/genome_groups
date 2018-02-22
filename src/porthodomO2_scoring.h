@@ -9,10 +9,16 @@
 #include "GenomicNeighborhood.h"
 #include "ProteinCollection.h"
 
-/*Receives two genomic neighborhoods and a ProteinCollection.
- *Returns the MWM_O2 porthodom score between the two neighborhoods
- *(Using the hungarian algorithm and the porthodom scoring formula that considers protein order).*/
-double porthodomO2_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                             ProteinCollection &clusters, double stringency);
+/**
+ *Receives the porthodom assignments and a normalizing factor (length of the longest neighborhood).
+ *Returns the porthodom O2 MWM score (that takes order in consideration).
+ */
+double porthodomO2_scoring(std::map<std::pair<int, int>, int> &assignments, int length);
 
+/**
+ *Receives two genomic neighborhoods, a ProteinCollection and the protein stringency.
+ *Returns the MWM porthodom  O2 protein assignments between the two neighborhoods
+ */
+std::map<std::pair<int, int>, int> porthodomO2_assignments(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
+                                                           ProteinCollection &clusters, double prot_stringency);
 #endif

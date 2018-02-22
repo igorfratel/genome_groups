@@ -40,38 +40,33 @@ static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood
 }
 
 /**
- *Receives two genomic neighborhoods and a ProteinCollection.
- *Returns the MWM_O2 porthodom score between the two neighborhoods
- *(Using the hungarian algorithm and the porthodom scoring formula that considers protein order).
+ *Receives two genomic neighborhoods, a ProteinCollection and the protein stringency.
+ *Returns the MWM porthodom  O2 protein assignments between the two neighborhoods
  */
-double porthodomO2_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2, ProteinCollection &clusters,
-                           double stringency) {
-
-    if(g1.protein_count() == 1 || g2.protein_count() == 1) return 0.0;
+std::map<std::pair<int, int>, int> porthodomO2_assignments(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
+                                                           ProteinCollection &clusters, double prot_stringency) {
+    //DEBUG
+    /*std::cout <<"Comparing (" << g1.get_accession() << ") and "
+                << "(" << g2.get_accession() << ", ):\n";*/
 
     std::map<std::pair<int, int>, int> assignments;
-    std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, stringency);
-
+    std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, prot_stringency);
     Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
 
     my_hungarian.solve();
     assignments = my_hungarian.get_assignments();
-    //DEBUG
-    /*std::cout <<"Assignments between (" << g1.get_accession() << ", ) and "
-    << "(" << g2.get_accession() << ", ):\n";
-    my_hungarian.print_assignment();
-    my_hungarian.print_cost();
-    fprintf(stderr, "\n");*/
-    //PORTHODOM similarity measure calculation, adapted for genome neighborhoods
-    //The similarity between to neighborhoods is given by the normalized sum of the
-    //similarities between each pair of "assigned" proteins (as given by the Hungarian algorithm)
-    //TO compute:
-    //    1. add the assignment values
-    //    2. divide by the number of proteins in the "largest" genome
-    double sum_temp = 0;
+    return assignments;
+}
+
+/**
+ *Receives the porthodom assignments and a normalizing factor (length of the longest neighborhood).
+ *Returns the porthodom MWM_O2 score (that takes order in consideration).
+ */
+double porthodomO2_scoring(std::map<std::pair<int, int>, int> &assignments, int length) {
+    double score = 0;
     for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
-        sum_temp += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
-        //DEBUG
-        /*std::cout << "SUM_TEMP: " << sum_temp << "\n";*/
-    return sum_temp/std::max(g1.protein_count(), g2.protein_count());
+        score += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
+
+    //apply the scoring formula
+    return score/length;
 }

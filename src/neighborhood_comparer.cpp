@@ -98,14 +98,14 @@ int main(int argc, char *argv[]) {
 
 	else if (execution_mode == "partial") {
 		//Already has the similarities between the proteins.
-		bool normalize_prot_sim = result["normalize_prot_sim"].as<bool>();
+		int normalize_prot_sim = result.count("normalize_prot_sim");
 
 		std::cout << "\nClustering proteins...\n";
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 		if (normalize_prot_sim)
 			prot_clusters.normalize();
-			
+
 		std::cout << "\nClustering genomic neighborhoods...\n";
 		genome_clustering(neighborhoods_filename, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
 
