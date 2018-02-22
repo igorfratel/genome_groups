@@ -20,7 +20,6 @@ int main(int argc, char *argv[]) {
 		("l,normalize_prot_sim", "Indicates that the protein similarities file should be normalized (Used in the partial execution mode)")
 		("f,formatted_prot_filename", "File already formatted as the input for the homology detection method", cxxopts::value<std::string>())
 		("p,protein_comparing", "Method for comparing proteins (default: nc)", cxxopts::value<std::string>()->default_value("nc"))
-		("m,num_prot", "Number of unique proteins", cxxopts::value<int>())
 		("t,prot_stringency", "Minimum similarity required to treat two proteins as a related pair", cxxopts::value<double>()->default_value("0.0"))
 		("r,neigh_stringency", "Minimum threshold to display the similarity between two neighborhoods", cxxopts::value<double>()->default_value("0.0"))
 		("g,neigh_comparing","Method for comparing genomic neighborhoods (default: porthodom method)", cxxopts::value<std::string>()->default_value("porthodom"))
@@ -44,7 +43,6 @@ int main(int argc, char *argv[]) {
 			    <<"    -s --prot_sim_filename\n"
 			    <<"    -f --formatted_prot_filename\n"
 			    <<"    -p --protein_comparing\n"
-			    <<"    -m --num_prot\n"
 			    <<"    -t --prot_stringency\n"
 				<<"    -r --neigh_stringency\n"
 			    <<"    -g --neigh_comparing\n"
@@ -55,7 +53,6 @@ int main(int argc, char *argv[]) {
 			    <<"    -e --execution_mode partial\n"
 			    <<"    -n --neighborhoods_filename\n"
 			    <<"    -s --prot_sim_filename\n"
-			    <<"    -m --num_prot\n"
 			    <<"    -t --prot_stringency\n"
 				<<"    -r --neigh_stringency\n"
 			    <<"    -g --neigh_comparing\n"
@@ -69,7 +66,6 @@ int main(int argc, char *argv[]) {
 	std::string execution_mode = result["execution_mode"].as<std::string>();
 	std::string neighborhoods_filename = result["neighborhoods_filename"].as<std::string>();
 	std::string prot_sim_filename = result["prot_sim_filename"].as<std::string>();
-	int num_prot = result["num_prot"].as<int>();
 	double prot_stringency = result["prot_stringency"].as<double>();
 	double neigh_stringency = result["neigh_stringency"].as<double>();
 
@@ -78,6 +74,7 @@ int main(int argc, char *argv[]) {
 	std::string pairings_filename = result["pairings_filename"].as<std::string>();
 
 	ProteinCollection prot_clusters;
+	int num_prot;
 
 	if (execution_mode == "full") {
 		//default execution
@@ -87,11 +84,16 @@ int main(int argc, char *argv[]) {
 		std::cout << "Applying homology detection method...\n";
 		homology_detection(formatted_prot_filename, protein_comparing, prot_sim_filename);
 
+		std::cout << "Parsing genomic neighborhoods...\n";
+		std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
+
+		num_prot = total_protein_count(neighborhoods);
+
 		std::cout << "\nClustering proteins...\n";
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods_filename, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
+		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
 
 		std::cout << "\nDone!";
 	}
@@ -100,6 +102,11 @@ int main(int argc, char *argv[]) {
 		//Already has the similarities between the proteins.
 		int normalize_prot_sim = result.count("normalize_prot_sim");
 
+		std::cout << "Parsing genomic neighborhoods...\n";
+		std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
+
+		num_prot = total_protein_count(neighborhoods);
+
 		std::cout << "\nClustering proteins...\n";
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
@@ -107,7 +114,7 @@ int main(int argc, char *argv[]) {
 			prot_clusters.normalize();
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods_filename, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
+		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
 
 		std::cout << "\nDone!\n";
 

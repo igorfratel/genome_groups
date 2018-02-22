@@ -25,7 +25,7 @@ static std::vector<std::string> split(const std::string& in, const std::string& 
  *Receives a genomic neighborhood filename.
  *Returns a vector of genomic neighborhoods, filled with the information from the file.
  */
- static std::vector<GenomicNeighborhood> parse_neighborhoods(const std::string &neighborhoods_filename) {
+std::vector<GenomicNeighborhood> parse_neighborhoods(const std::string &neighborhoods_filename) {
      std::ifstream file;
      std::string line;
      std::vector<std::string> split_line;
@@ -122,12 +122,25 @@ static void output_pairingsO2(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
 }
 
 /**
- *Receives a file containing all the genomic neighborhoods,
+ *Receives a vector of genomic neighborhoods and returns the number of unique proteins in them.
+ */
+int total_protein_count(std::vector<GenomicNeighborhood> &neighborhoods) {
+    std::set<std::string> protein_set;
+    for(unsigned int i = 0; i < neighborhoods.size(); i++) {
+        for (GenomicNeighborhood::iterator it = neighborhoods[i].begin(); it != neighborhoods[i].end(); ++it) {
+            protein_set.emplace(it->pid);
+        }
+    }
+    return protein_set.size();
+}
+
+/**
+ *Receives a vector of genomic neighborhoods,
  *a ProteinCollection and the desired genomic neighborhood clustering method.
  *Writes the similarity between all genomic neighborhoods on the genome_sim_filename and,
  *optionally, the pairings made between their proteins on the pairings_filename.
  */
-void genome_clustering(const std::string &neighborhoods_filename, ProteinCollection &clusters,
+void genome_clustering(std::vector<GenomicNeighborhood> &neighborhoods, ProteinCollection &clusters,
                        const std::string &method, double prot_stringency, double neigh_stringency, const std::string &genome_sim_filename,
                        const std::string &pairings_filename) {
 
@@ -140,8 +153,6 @@ void genome_clustering(const std::string &neighborhoods_filename, ProteinCollect
     std::ofstream pairings_file;
     if(pairings_filename != "&") //Dummy filename indicating this option was not chosen
         pairings_file = std::ofstream(pairings_filename.c_str());
-
-    std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
 
     if (method == "porthodom") {
         std::map<std::pair<int,int>, int> assignments;
