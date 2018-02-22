@@ -46,23 +46,35 @@ static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood
     return matrix;
 }
 
-/**
- *Receives two genomic neighborhoods and a ProteinCollection.
- *Returns the MWM porthodom score between the two neighborhoods
- *(Using the hungarian algorithm and the porthodom scoring formula).
+/*Receives two genomic neighborhoods and a ProteinCollection.
+ *Returns the MWM porthodom protein assignments between the two neighborhoods
  */
-std::map<std::pair<int, int>, int> porthodom_scoring(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                             ProteinCollection &clusters, double stringency) {
+std::map<std::pair<int, int>, int> porthodom_assignments(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
+                             ProteinCollection &clusters, double prot_stringency) {
 
     //DEBUG
     /*std::cout <<"Comparing (" << g1.get_accession() << ") and "
                 << "(" << g2.get_accession() << ", ):\n";*/
 
     std::map<std::pair<int, int>, int> assignments;
-    std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, stringency);
+    std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, prot_stringency);
     Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
 
     my_hungarian.solve();
     assignments = my_hungarian.get_assignments();
     return assignments;
+}
+
+/*Receives the porthodom assignments and a normalizing factor (length of the longest neighborhood).
+ *Returns the porthodom MWM score.
+ */
+
+double porthodom_scoring(std::map<std::pair<int, int>, int> &assignments, int length) {
+    double score = 0;
+    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
+        score += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
+
+    //apply the scoring formula
+    return score/length;
+
 }

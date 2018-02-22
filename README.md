@@ -3,9 +3,6 @@ HOW TO RUN:
 - 1: ./make  
 - 2: ./neighborhood_comparer <full or partial> <args according to chosen mode>  
 
-
-ARGUMENTS FOR EACH EXECUTION MODE (default full):  
-
 full --> default execution  
     -e --execution_mode full    
     -n --neighborhoods_filename  "File containing the genomic neighborhoods"   
@@ -15,7 +12,7 @@ full --> default execution
     -m --num_prot  "Number of unique proteins"  
     -t --prot_stringency  "Minimum similarity required to treat two proteins as a related pair (default 0)"  
     -r --neigh_stringency "Minimum threshold to display the similarity between two neighborhoods (default 0)"  
-    -g --genome_comparing  "Method for comparing genomic neighborhoods (default: porthodom method)"  
+    -g --neigh_comparing  "Method for comparing genomic neighborhoods (default: porthodom method)"  
     -o --output  "Where the neighborhood similarities should be written (outputs do stdout if the filename is - or if not used)"
     -a --pairings_filename "Where the chosen pairings between proteins in the neighborhoods should be written (if not specified, does not generate a pairings file)"  
 
@@ -27,7 +24,7 @@ partial --> Already has the similarities between the proteins.
     -m --num_prot  
     -t --prot_stringency  
     -r --neigh_stringency "Minimum threshold to display the similarity between two neighborhoods"
-    -g --genome_comparing  
+    -g --neigh_comparing  
     -o --output  
     -a --pairings_filename "Where the chosen pairings between proteins in the neighborhoods should be written"
 
