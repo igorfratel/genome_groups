@@ -41,6 +41,8 @@ class ProteinCollection {
 		 *If not connected, returns 0.0*/
 		double get_similarity(const std::string& node1, const std::string& node2);
 
+		void normalize();
+		
 		/*Returns vector of connected components where each position is a vector of nodes in the same
 		 *component*/
 		std::vector<std::vector<std::string> > connected_components(double weight);

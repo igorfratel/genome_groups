@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
 		("e,execution_mode", "full or partial execution mode (default: full)", cxxopts::value<std::string>()->default_value("full"))
 		("n,neighborhoods_filename", "File containing the genomic neighborhoods", cxxopts::value<std::string>())
 		("s,prot_sim_filename", "File containing pairs of proteins and their similarities", cxxopts::value<std::string>())
+		("l,normalize_prot_sim", "Indicates that the protein similarities file should be normalized (Used in the partial execution mode)")
 		("f,formatted_prot_filename", "File already formatted as the input for the homology detection method", cxxopts::value<std::string>())
 		("p,protein_comparing", "Method for comparing proteins (default: nc)", cxxopts::value<std::string>()->default_value("nc"))
 		("m,num_prot", "Number of unique proteins", cxxopts::value<int>())
@@ -97,10 +98,14 @@ int main(int argc, char *argv[]) {
 
 	else if (execution_mode == "partial") {
 		//Already has the similarities between the proteins.
+		bool normalize_prot_sim = result["normalize_prot_sim"].as<bool>();
 
 		std::cout << "\nClustering proteins...\n";
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
+		if (normalize_prot_sim)
+			prot_clusters.normalize();
+			
 		std::cout << "\nClustering genomic neighborhoods...\n";
 		genome_clustering(neighborhoods_filename, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
 

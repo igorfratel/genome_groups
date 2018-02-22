@@ -26,13 +26,15 @@ void ProteinCollection::connect_proteins(const std::string& node1, const std::st
  	auto y = nodes.at(node2).index;
 
 	//DEBUG
- 	/*std::cerr << x << std::endl;
- 	std::cerr << y << std::endl;
- 	std::cerr << adj.size() << std::endl;*/
+ 	/*std::cerr << node1 << std::endl;
+ 	std::cerr << node2 << std::endl;
+ 	std::cerr << weight << std::endl;*/
 	if (x >= y)
   		adj[x].emplace(y, weight);
-	else
+	else {
+
   		adj[y].emplace(x, weight);
+	}
 }
 
 /**
@@ -79,6 +81,18 @@ double ProteinCollection::get_similarity(const std::string& node1,
 	catch(...){
 		return 0.0;
 	}
+}
+
+void ProteinCollection::normalize() {
+	double max_score = 0;
+	for(unsigned int i = 0; i < adj.size(); i++)
+		for (typename std::unordered_map<int, double>::iterator it = adj[i].begin(); it != adj[i].end(); ++it)
+			if (it->second > max_score)
+				max_score = it->second;
+
+	for(unsigned int i = 0; i < adj.size(); i++)
+		for (typename std::unordered_map<int, double>::iterator it = adj[i].begin(); it != adj[i].end(); ++it)
+			it->second = it->second/max_score;
 }
 
 /**

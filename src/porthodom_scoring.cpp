@@ -9,8 +9,8 @@
 static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, ProteinCollection &clusters,
                             double stringency) {
   //DEBUG
-  //std::cout << "clustering value between " << my_prot.pid << " and " << my_prot2.pid << "\n";
   double similarity = clusters.get_similarity(my_prot.pid, my_prot2.pid);
+  std::cout << "clustering value between " << my_prot.pid << " and " << my_prot2.pid << " " << similarity << "\n";
   if (similarity >= stringency)
     return (int)(1000000*similarity);
   else
