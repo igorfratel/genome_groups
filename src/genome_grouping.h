@@ -4,7 +4,6 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
-#include <set>
 #include "GenomicNeighborhood.h"
 #include "ProteinCollection.h"
 #include "porthodom_scoring.h"
@@ -25,10 +24,5 @@ void genome_clustering(std::vector<GenomicNeighborhood> &neighborhoods, ProteinC
  *Returns a vector of genomic neighborhoods, filled with the information from the file
  */
 std::vector<GenomicNeighborhood> parse_neighborhoods(const std::string &neighborhoods_filename);
-
-/**
- *Receives a vector of genomic neighborhoods and returns the number of unique proteins in them.
- */
-int total_protein_count(std::vector<GenomicNeighborhood> &neighborhoods);
 
 #endif

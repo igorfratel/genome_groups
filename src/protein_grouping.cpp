@@ -1,6 +1,32 @@
 #include "protein_grouping.h"
 
 /**
+ *Receives the protein similarities file returns the number of unique proteins in it.
+ */
+int total_protein_count(const std::string &prot_sim_filename) {
+    std::set<std::string> protein_set;
+    std::ifstream file;
+    std::string prot;
+
+    file.open(prot_sim_filename.c_str());
+
+    if (file.fail()) {
+        std::cerr << "ERROR: trouble opening the protein similarities file\n";
+        exit(1);
+    }
+
+    while(std::getline(file, prot, ' ')) {
+        protein_set.emplace(prot);
+        std::getline(file, prot, ' ');
+        protein_set.emplace(prot);
+        std::getline(file, prot); //similarity is ignored
+    }
+    file.close();
+    return protein_set.size();
+}
+
+
+/**
  *Receives the user's preferred protein homology/orthology detection method and runs it on a file
  *already formatted to be its input.
  *Writes the results to prot_sim_filename

@@ -1,6 +1,11 @@
 CXX := g++
+<<<<<<< HEAD
 CXXFLAGS := -std=c++11 -Wall -Wextra -Wpedantic -I -pg -g -Ofast -msse2 -march=native -ftree-vectorize -fopenmp
 LDFLAGS := -g -fopenmp
+=======
+CXXFLAGS := -std=c++11 -Ofast -msse2 -march=native -Wall -Wextra -Wpedantic
+LDFLAGS := -g
+>>>>>>> my-temporary-work
 
 all: neighborhood_comparer
 

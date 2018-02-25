@@ -4,8 +4,14 @@
 #include <string>
 #include <stdlib.h>
 #include <fstream>
+#include <set>
 #include <vector>
 #include "ProteinCollection.h"
+
+/**
+ *Receives the protein similarities file returns the number of unique proteins in it.
+ */
+int total_protein_count(const std::string &prot_sim_filename);
 
 /*Receives the user's preferred protein homology/orthology detection method and runs it on a file
  *already formatted to be its input.

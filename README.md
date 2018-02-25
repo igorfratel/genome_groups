@@ -33,12 +33,10 @@ Help option: -h --help
 protein scoring methods: nc.
 neighborhood scoring methods: porthodom, porthodomO2.
 
-Output format: "accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2    score"  
+prot_sim_filename format: "prot1 prot2 score" <-- whitespaces!
+Output format: "accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2    score"  <-- tabs
 Pairings format: ">accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2
-                  prot1 prot2 sim"  
-
-NOTE: the number of unique proteins in the prot_sim_filename or in the formatted_prot_filename can't be bigger
-than the number of unique proteins in the neighborhoods_filename.  
+                  prot1 prot2 sim"  <-- tabs
 
 To add a new neighborhood scoring method: include the file containing the scoring function in genome_grouping.h,
 add a new "if else" clause at the genome_clustering function in the genome_grouping.cpp file comparing the genomic neighborhoods using the new scoring function. Add new files to Makefile.
