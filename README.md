@@ -2,7 +2,7 @@ HOW TO RUN:
 
 - 1: ./make  
 - 2: ./neighborhood_comparer <full or partial> <args according to chosen mode>  
-```
+
 full --> default execution  
     -e --execution_mode full    
     -n --neighborhoods_filename  "File containing the genomic neighborhoods"   
@@ -26,7 +26,7 @@ partial --> Already has the similarities between the proteins.
     -g --neigh_comparing  
     -o --output  
     -a --pairings_filename "Where the chosen pairings between proteins in the neighborhoods should be written"
-```
+
 
 
 Help option: -h --help  
