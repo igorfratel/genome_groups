@@ -17,7 +17,7 @@
  *optionally, the pairings made between their proteins on the pairings_filename.
  */
 void genome_clustering(std::vector<GenomicNeighborhood> &neighborhoods, ProteinCollection &clusters,
-                       const std::string &method, double prot_stringency, double neigh_stringency,
+                       const std::string &method, double prot_stringency, double neigh_stringency, size_t num_threads,
                        const std::string &genome_sim_filename, const std::string &pairings_filename);
 
 /**

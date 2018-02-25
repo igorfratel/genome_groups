@@ -1,6 +1,6 @@
 CXX := g++
-CXXFLAGS := -std=c++11 -Ofast -msse2 -march=native -Wall -Wextra -Wpedantic -I -pg -g
-LDFLAGS := -g
+CXXFLAGS := -std=c++11 -Wall -Wextra -Wpedantic -I -pg -g -Ofast -msse2 -march=native -ftree-vectorize -fopenmp
+LDFLAGS := -g -fopenmp
 
 all: neighborhood_comparer
 

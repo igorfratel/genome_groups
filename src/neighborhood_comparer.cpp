@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
 		("t,prot_stringency", "Minimum similarity required to treat two proteins as a related pair", cxxopts::value<double>()->default_value("0.0"))
 		("r,neigh_stringency", "Minimum threshold to display the similarity between two neighborhoods", cxxopts::value<double>()->default_value("0.0"))
 		("g,neigh_comparing","Method for comparing genomic neighborhoods (default: porthodom method)", cxxopts::value<std::string>()->default_value("porthodom"))
+    ("j,num_threads", "Number of threads used when comparing the neighborhoods(default: 1)", cxxopts::value<size_t>()->default_value("1"))
 		("o,output", "Where the neighborhood similarities should be written", cxxopts::value<std::string>()->default_value("-"))
 		("a,pairings_filename", "Where the chosen pairings between proteins in the neighborhoods should be written", cxxopts::value<std::string>()->default_value("&"))
 		;
@@ -68,6 +69,8 @@ int main(int argc, char *argv[]) {
 	std::string prot_sim_filename = result["prot_sim_filename"].as<std::string>();
 	double prot_stringency = result["prot_stringency"].as<double>();
 	double neigh_stringency = result["neigh_stringency"].as<double>();
+  int num_threads = result["num_threads"].as<size_t>();
+
 
 	std::string neigh_comparing = result["neigh_comparing"].as<std::string>();
 	std::string output = result["output"].as<std::string>() ;
@@ -93,7 +96,7 @@ int main(int argc, char *argv[]) {
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
+		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, num_threads, output, pairings_filename);
 
 		std::cout << "\nDone!";
 	}
@@ -114,7 +117,7 @@ int main(int argc, char *argv[]) {
 			prot_clusters.normalize();
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
+		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, num_threads, output, pairings_filename);
 
 		std::cout << "\nDone!\n";
 

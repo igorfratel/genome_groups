@@ -7,7 +7,7 @@
  *If the proteins aren't connected or if their similarity is smaller than the threshold value, return 0.
  */
 static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, ProteinCollection &clusters,
-                            double stringency) {
+    double stringency) {
   //DEBUG
   //std::cout << "clustering value between " << my_prot.pid << " and " << my_prot2.pid << " " << similarity << "\n";
   double similarity = clusters.get_similarity(my_prot.pid, my_prot2.pid);
@@ -24,45 +24,45 @@ static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, Pro
  *the j-th protein of g2 are in the same cluster (connected in the ProteinCollection) and 0 otherwise.
  */
 static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                                                     ProteinCollection &clusters, double stringency) {
+    ProteinCollection &clusters, double stringency) {
 
-    int i = 0;
-    int j = 0;
-    std::vector<std::vector<int> > matrix(g1.protein_count(), std::vector<int>(g2.protein_count()));
+  int i = 0;
+  int j = 0;
+  std::vector<std::vector<int> > matrix(g1.protein_count(), std::vector<int>(g2.protein_count()));
 
-    for(GenomicNeighborhood::iterator it = g1.begin(); it != g1.end(); ++it) {
-        j = 0;
-        for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
+  for(GenomicNeighborhood::iterator it = g1.begin(); it != g1.end(); ++it) {
+    j = 0;
+    for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
 
-            //DEBUG
-            /*std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << "\n";*/
-            matrix[i][j] = clustering_value(*it, *it2, clusters, stringency);
-            //DEBUG
-            //std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
-            j++;
-        }
-        i++;
+      //DEBUG
+      /*std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << "\n";*/
+      matrix[i][j] = clustering_value(*it, *it2, clusters, stringency);
+      //DEBUG
+      //std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
+      j++;
     }
-    return matrix;
+    i++;
+  }
+  return matrix;
 }
 
 /*Receives two genomic neighborhoods and a ProteinCollection.
  *Returns the MWM porthodom protein assignments between the two neighborhoods
  */
 std::map<std::pair<int, int>, int> porthodom_assignments(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                             ProteinCollection &clusters, double prot_stringency) {
+    ProteinCollection &clusters, double prot_stringency) {
 
-    //DEBUG
-    /*std::cout <<"Comparing (" << g1.get_accession() << ") and "
-                << "(" << g2.get_accession() << ", ):\n";*/
+  //DEBUG
+  /*std::cout <<"Comparing (" << g1.get_accession() << ") and "
+    << "(" << g2.get_accession() << ", ):\n";*/
 
-    std::map<std::pair<int, int>, int> assignments;
-    std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, prot_stringency);
-    Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
+  std::map<std::pair<int, int>, int> assignments;
+  std::vector<std::vector<int> > matrix = fill_assignment_matrix(g1, g2, clusters, prot_stringency);
+  Hungarian my_hungarian (matrix, matrix.size(), matrix[0].size(), HUNGARIAN_MODE_MAXIMIZE_UTIL);
 
-    my_hungarian.solve();
-    assignments = my_hungarian.get_assignments();
-    return assignments;
+  my_hungarian.solve();
+  assignments = my_hungarian.get_assignments();
+  return assignments;
 }
 
 /*Receives the porthodom assignments and a normalizing factor (length of the longest neighborhood).
@@ -70,11 +70,11 @@ std::map<std::pair<int, int>, int> porthodom_assignments(GenomicNeighborhood &g1
  */
 
 double porthodom_scoring(std::map<std::pair<int, int>, int> &assignments, int length) {
-    double score = 0;
-    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
-        score += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
+  double score = 0;
+  for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
+    score += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
 
-    //apply the scoring formula
-    return score/length;
+  //apply the scoring formula
+  return score/length;
 
 }
