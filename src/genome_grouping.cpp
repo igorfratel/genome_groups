@@ -122,19 +122,6 @@ static void output_pairingsO2(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
 }
 
 /**
- *Receives a vector of genomic neighborhoods and returns the number of unique proteins in them.
- */
-int total_protein_count(std::vector<GenomicNeighborhood> &neighborhoods) {
-    std::set<std::string> protein_set;
-    for(unsigned int i = 0; i < neighborhoods.size(); i++) {
-        for (GenomicNeighborhood::iterator it = neighborhoods[i].begin(); it != neighborhoods[i].end(); ++it) {
-            protein_set.emplace(it->pid);
-        }
-    }
-    return protein_set.size();
-}
-
-/**
  *Receives a vector of genomic neighborhoods,
  *a ProteinCollection and the desired genomic neighborhood clustering method.
  *Writes the similarity between all genomic neighborhoods on the genome_sim_filename and,

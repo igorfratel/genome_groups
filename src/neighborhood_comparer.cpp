@@ -84,13 +84,12 @@ int main(int argc, char *argv[]) {
 		std::cout << "Applying homology detection method...\n";
 		homology_detection(formatted_prot_filename, protein_comparing, prot_sim_filename);
 
-		std::cout << "Parsing genomic neighborhoods...\n";
-		std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
-
-		num_prot = total_protein_count(neighborhoods);
+		num_prot = total_protein_count(prot_sim_filename);
 
 		std::cout << "\nClustering proteins...\n";
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
+
+		std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
 		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
@@ -102,16 +101,15 @@ int main(int argc, char *argv[]) {
 		//Already has the similarities between the proteins.
 		int normalize_prot_sim = result.count("normalize_prot_sim");
 
-		std::cout << "Parsing genomic neighborhoods...\n";
-		std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
-
-		num_prot = total_protein_count(neighborhoods);
+		num_prot = total_protein_count(prot_sim_filename);
 
 		std::cout << "\nClustering proteins...\n";
 		prot_clusters = protein_clustering(prot_sim_filename, num_prot);
 
 		if (normalize_prot_sim)
 			prot_clusters.normalize();
+
+		std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
 		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);

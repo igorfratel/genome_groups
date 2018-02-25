@@ -1,5 +1,5 @@
 CXX := g++
-CXXFLAGS := -std=c++11 -Ofast -msse2 -march=native -Wall -Wextra -Wpedantic -I -pg -g
+CXXFLAGS := -std=c++11 -Ofast -msse2 -march=native -Wall -Wextra -Wpedantic
 LDFLAGS := -g
 
 all: neighborhood_comparer
