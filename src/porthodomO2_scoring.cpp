@@ -1,6 +1,43 @@
 #include "porthodomO2_scoring.h"
 
 /**
+ *Prints the score between two genomic neighborhoods in the standard format
+ */
+void porthodomO2_output_score(GenomicNeighborhood &g1, GenomicNeighborhood &g2, double score, std::ofstream &output_file) {
+    output_file << g1.get_accession() << "\t" <<
+                   g1.get_first_cds() << "\t" <<
+                   g1.get_last_cds() << "\t" <<
+                   g2.get_accession() << "\t" <<
+                   g2.get_first_cds() << "\t" <<
+                   g2.get_last_cds() << "\t" <<
+                   score << "\n";
+}
+
+/**
+ *Prints the chosen protein assignments to the pairings_file (treats each assignment as a pair of pairs of proteins)
+ */
+void porthodomO2_output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
+                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file) {
+
+    //Writes header
+    pairings_file << ">" << g1.get_accession() << "\t" <<
+                            g1.get_first_cds() << "\t" <<
+                            g1.get_last_cds() << "\t" <<
+                            g2.get_accession() << "\t" <<
+                            g2.get_first_cds() << "\t" <<
+                            g2.get_last_cds() << "\n";
+
+    //Writes pairings
+    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it){
+        pairings_file << g1.get_pid(it->first.first) << "\t" <<
+                         g1.get_pid(it->first.first + 1) << "\t" <<
+                         g2.get_pid(it->first.second) << "\t" <<
+                         g2.get_pid(it->first.second + 1) << "\t" <<
+                         ((double)it->second)/1000000 << "\n";
+    }
+}
+
+/**
  *Receives two pairs of proteins, a ProteinCollection and a threshold value.
  *The score returned is the average of the similarities between the pairs.
  */

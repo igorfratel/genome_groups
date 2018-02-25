@@ -62,64 +62,6 @@ std::vector<GenomicNeighborhood> parse_neighborhoods(const std::string &neighbor
      file.close();
      return neighborhoods;
  }
-/**
- *Prints the score between two genomic neighborhoods in the standard format
- */
-static void output_score(GenomicNeighborhood &g1, GenomicNeighborhood &g2, double score, std::ofstream &output_file) {
-    output_file << g1.get_accession() << "\t" <<
-                   g1.get_first_cds() << "\t" <<
-                   g1.get_last_cds() << "\t" <<
-                   g2.get_accession() << "\t" <<
-                   g2.get_first_cds() << "\t" <<
-                   g2.get_last_cds() << "\t" <<
-                   score << "\n";
-}
-
-/**
- *Prints the chosen protein assignments to the pairings_file
- */
-static void output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file) {
-
-    //Writes header
-    pairings_file << ">" << g1.get_accession() << "\t" <<
-                            g1.get_first_cds() << "\t" <<
-                            g1.get_last_cds() << "\t" <<
-                            g2.get_accession() << "\t" <<
-                            g2.get_first_cds() << "\t" <<
-                            g2.get_last_cds() << "\n";
-
-    //Writes pairings
-    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it){
-        pairings_file << g1.get_pid(it->first.first) << "\t" <<
-                         g2.get_pid(it->first.second) << "\t" <<
-                         ((double)it->second)/1000000 << "\n";
-    }
-}
-
-/**
- *Prints the chosen protein assignments to the pairings_file (treats each assignment as a pair of pairs of proteins)
- */
-static void output_pairingsO2(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file) {
-
-    //Writes header
-    pairings_file << ">" << g1.get_accession() << "\t" <<
-                            g1.get_first_cds() << "\t" <<
-                            g1.get_last_cds() << "\t" <<
-                            g2.get_accession() << "\t" <<
-                            g2.get_first_cds() << "\t" <<
-                            g2.get_last_cds() << "\n";
-
-    //Writes pairings
-    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it){
-        pairings_file << g1.get_pid(it->first.first) << "\t" <<
-                         g1.get_pid(it->first.first + 1) << "\t" <<
-                         g2.get_pid(it->first.second) << "\t" <<
-                         g2.get_pid(it->first.second + 1) << "\t" <<
-                         ((double)it->second)/1000000 << "\n";
-    }
-}
 
 /**
  *Receives a vector of genomic neighborhoods,
@@ -155,11 +97,11 @@ void genome_clustering(std::vector<GenomicNeighborhood> &neighborhoods, ProteinC
 
                 if (score < neigh_stringency) continue; //ignore scores below stringency
                 //Writes scores to output_file
-                output_score(neighborhoods[m], neighborhoods[n], score, output_file);
+                porthodom_output_score(neighborhoods[m], neighborhoods[n], score, output_file);
 
                 if (pairings_filename == "&") continue; //Dummy filename indicating this option was not chosen
                 //Writes pairing to pairings_file
-                output_pairings(neighborhoods[m], neighborhoods[n], assignments, pairings_file);
+                porthodom_output_pairings(neighborhoods[m], neighborhoods[n], assignments, pairings_file);
             }
         }
     }
@@ -184,11 +126,11 @@ void genome_clustering(std::vector<GenomicNeighborhood> &neighborhoods, ProteinC
 
                 if (score < neigh_stringency) continue; //ignore scores below stringency
                 //Writes scores to output_file
-                output_score(neighborhoods[m], neighborhoods[n], score, output_file);
+                porthodomO2_output_score(neighborhoods[m], neighborhoods[n], score, output_file);
 
                 if (pairings_filename == "&") continue; //Dummy filename indicating this option was not chosen
                 //Writes pairing to pairings_file
-                output_pairingsO2(neighborhoods[m], neighborhoods[n], assignments, pairings_file);
+                porthodomO2_output_pairings(neighborhoods[m], neighborhoods[n], assignments, pairings_file);
             }
         }
     }

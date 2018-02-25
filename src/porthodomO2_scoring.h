@@ -3,11 +3,23 @@
 
 #include <map>
 #include <string>
+#include <fstream>
 #include <algorithm>
 #include <iterator>
 #include "Hungarian.h"
 #include "GenomicNeighborhood.h"
 #include "ProteinCollection.h"
+
+/**
+ *Prints the score between two genomic neighborhoods in the standard format
+ */
+void porthodomO2_output_score(GenomicNeighborhood &g1, GenomicNeighborhood &g2, double score, std::ofstream &output_file);
+
+/**
+ *Prints the chosen protein assignments to the pairings_file (treats each assignment as a pair of pairs of proteins)
+ */
+void porthodomO2_output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
+                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
 
 /**
  *Receives the porthodom assignments and a normalizing factor (length of the longest neighborhood).

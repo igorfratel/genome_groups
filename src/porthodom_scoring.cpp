@@ -1,6 +1,41 @@
 #include "porthodom_scoring.h"
 
 /**
+ *Prints the score between two genomic neighborhoods in the standard format
+ */
+void porthodom_output_score(GenomicNeighborhood &g1, GenomicNeighborhood &g2, double score, std::ofstream &output_file) {
+    output_file << g1.get_accession() << "\t" <<
+                   g1.get_first_cds() << "\t" <<
+                   g1.get_last_cds() << "\t" <<
+                   g2.get_accession() << "\t" <<
+                   g2.get_first_cds() << "\t" <<
+                   g2.get_last_cds() << "\t" <<
+                   score << "\n";
+}
+
+/**
+ *Prints the chosen protein assignments to the pairings_file
+ */
+void porthodom_output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
+                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file) {
+
+    //Writes header
+    pairings_file << ">" << g1.get_accession() << "\t" <<
+                            g1.get_first_cds() << "\t" <<
+                            g1.get_last_cds() << "\t" <<
+                            g2.get_accession() << "\t" <<
+                            g2.get_first_cds() << "\t" <<
+                            g2.get_last_cds() << "\n";
+
+    //Writes pairings
+    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it){
+        pairings_file << g1.get_pid(it->first.first) << "\t" <<
+                         g2.get_pid(it->first.second) << "\t" <<
+                         ((double)it->second)/1000000 << "\n";
+    }
+}
+
+/**
  *Receives two proteins, a ProteinCollection and a threshold value.
  *If the proteins are connected in the ProteinCollection, return an integer with 100x their similarity (because
  *the Hungarian class only works with integers).
