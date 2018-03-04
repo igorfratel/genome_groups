@@ -15,12 +15,12 @@ full --> default execution
     -e --execution_mode full    
     -n --neighborhoods_filename  "File containing the genomic neighborhoods"   
     -s --prot_sim_filename  "File containing pairs of proteins and their similarities"  
-    -f --formatted_prot_filename "File already formatted as the input for the homology detection method"  
+    -f --formatted_prot_filename "File already formatted as the input for the homology detection method (eg: nc method receives a blast file containing the pid's and the bitscore separated by spaces)"  
     -p --protein_comparing  "Method for comparing proteins (default: nc)"  
     -t --prot_stringency  "Minimum similarity required to treat two proteins as a related pair (default 0)"  
     -r --neigh_stringency "Minimum threshold to display the similarity between two neighborhoods (default 0)"  
     -g --neigh_comparing  "Method for comparing genomic neighborhoods (default: porthodom method)"  
-    -o --output  "Where the neighborhood similarities should be written (outputs do stdout if the filename is - or if not used)"
+    -o --output  "Where the neighborhood similarities should be written (outputs to stdout if the filename is - or if not used)"
     -a --pairings_filename "Where the chosen pairings between proteins in the neighborhoods should be written (if not specified, does not generate a pairings file)"  
 
 
@@ -30,10 +30,10 @@ partial --> Already has the similarities between the proteins.
     -s --prot_sim_filename  
     -l --normalize_prot_sim" "Indicates that the protein similarities file should be normalized"
     -t --prot_stringency  
-    -r --neigh_stringency "Minimum threshold to display the similarity between two neighborhoods"
+    -r --neigh_stringency
     -g --neigh_comparing  
     -o --output  
-    -a --pairings_filename "Where the chosen pairings between proteins in the neighborhoods should be written"
+    -a --pairings_filename
 
 Help option: -h --help  
 ```
@@ -44,10 +44,11 @@ Help option: -h --help
 
 * prot_sim_filename format: "prot1 prot2 score" <-- whitespaces!
 
-* Output format: "accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2    score"  <-- tabs
+* Output format: "accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2    score" <-- tabs
 
-* Pairings format: ">accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2
-                  prot1 prot2 sim"  <-- tabs
+* Pairings format:  
+  header: ">accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2" <-- tabs  
+  pairings: "prot1 prot2 sim" <-- tabs
 
 * To add a new neighborhood scoring method: include the filename containing the scoring method functions in genome_grouping.h,
 add a new "if else" clause at the genome_clustering function in the genome_grouping.cpp file comparing the genomic neighborhoods using the new scoring function. Add new files to Makefile.
