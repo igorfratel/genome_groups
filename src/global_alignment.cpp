@@ -25,21 +25,23 @@ static std::vector<std::vector<double> > compute_sim (const std::vector<protein_
                                                       const std::vector<protein_info_t> &seq_2,
                                                       const ProteinCollection &clusters, double stringency) {
 
-    int match;
-    int options[3];
+    double match;
+    double options[3];
     std::vector<std::vector<double> > dyn_matrix(seq_1.size() + 1, std::vector<double>(seq_2.size() + 1));
+
     for (size_t i = 0; i <= seq_1.size(); i++)
-        dyn_matrix[i][0] = i * GAP;
+        dyn_matrix[i][0] = (double)i * GAP;
     for (size_t i = 0; i <= seq_2.size(); i++)
-        dyn_matrix[0][i] = i * GAP;
-    for (size_t i = 1; i <= seq_1.size(); i++)
+        dyn_matrix[0][i] = (double)i * GAP;
+    for (size_t i = 1; i <= seq_1.size(); i++) {
         for (size_t j = 1; j <= seq_2.size(); j++) {
-            match = clustering_value(seq_1[i], seq_2[j], clusters, stringency);
-            options[0] = dyn_matrix[i-1][j] + GAP;
+            match = clustering_value(seq_1[i-1], seq_2[j-1], clusters, stringency);
+            options[0] = dyn_matrix[i-1][j] + (double)GAP;
             options[1] = dyn_matrix[i-1][j-1] + match;
-            options[2] = dyn_matrix[i][j-1] + GAP;
-            dyn_matrix[i][j] = *std::max_element(options, options + 3);
+            options[2] = dyn_matrix[i][j-1] + (double)GAP;
+            dyn_matrix[i][j] = *std::max_element(std::begin(options), std::end(options));
         }
+    }
     return dyn_matrix;
 }
 
@@ -65,7 +67,7 @@ static void align(const std::vector<std::vector<double> > &dyn_matrix, int i, in
         align_2.push_back("-");
     }
     else if (i > 0 && j > 0 && dyn_matrix[i][j] == dyn_matrix[i-1][j-1] +
-             clustering_value(seq_1[i], seq_2[j], clusters, stringency)) {
+             clustering_value(seq_1[i-1], seq_2[j-1], clusters, stringency)) {
         align(dyn_matrix, i - 1, j - 1, len, align_1, align_2, seq_1, seq_2, clusters, stringency);
         len++;
         align_1.push_back(seq_1[i-1].pid);
@@ -85,7 +87,6 @@ static void align(const std::vector<std::vector<double> > &dyn_matrix, int i, in
 std::vector<std::vector<double> > global_alignment_assignments(const std::vector<protein_info_t> &g1,
                                                                const std::vector<protein_info_t> &g2,
                                                                const ProteinCollection &clusters, double prot_stringency) {
-
     return compute_sim(g1, g2, clusters, prot_stringency);
 }
 
@@ -126,5 +127,5 @@ void global_alignment_output_pairings(const GenomicNeighborhood &g1, const Genom
 
     //Writes pairings
     for (size_t i = 0; i < align_1.size(); i++)
-        std::cout << align_1[i] << "\t" << align_2[i] << "\n";
+        pairings_file << align_1[i] << "\t" << align_2[i] << "\n";
 }

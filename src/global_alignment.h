@@ -8,7 +8,7 @@
 #include "GenomicNeighborhood.h"
 #include "ProteinCollection.h"
 
-#define GAP -2 //gap penaulty
+#define GAP -2.0 //gap penaulty
 
 /**
  *Returns the dynamic programming matrix used in the global alignment algorithm (Needleman-Wunsch).
