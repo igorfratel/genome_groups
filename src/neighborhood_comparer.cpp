@@ -53,6 +53,7 @@ int main(int argc, char *argv[]) {
 			    <<"    -e --execution_mode partial\n"
 			    <<"    -n --neighborhoods_filename\n"
 			    <<"    -s --prot_sim_filename\n"
+				<<"    -l --normalize_prot_sim\n"
 			    <<"    -t --prot_stringency\n"
 				<<"    -r --neigh_stringency\n"
 			    <<"    -g --neigh_comparing\n"
