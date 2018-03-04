@@ -13,24 +13,25 @@
 /**
  *Prints the score between two genomic neighborhoods in the standard format
  */
-void porthodomO2_output_score(GenomicNeighborhood &g1, GenomicNeighborhood &g2, double score, std::ofstream &output_file);
+void porthodomO2_output_score(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2, double score, std::ofstream &output_file);
 
 /**
  *Prints the chosen protein assignments to the pairings_file (treats each assignment as a pair of pairs of proteins)
  */
-void porthodomO2_output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
+void porthodomO2_output_pairings(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2,
+                            const std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
 
 /**
  *Receives the porthodom assignments and a normalizing factor (length of the longest neighborhood).
  *Returns the porthodom O2 MWM score (that takes order in consideration).
  */
-double porthodomO2_scoring(std::map<std::pair<int, int>, int> &assignments, int length);
+double porthodomO2_scoring(const std::map<std::pair<int, int>, int> &assignments, int length);
 
 /**
- *Receives two genomic neighborhoods, a ProteinCollection and the protein stringency.
+ *Receives two protein_info_t vectors, a ProteinCollection and the protein stringency.
  *Returns the MWM porthodom  O2 protein assignments between the two neighborhoods
  */
-std::map<std::pair<int, int>, int> porthodomO2_assignments(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                                                           ProteinCollection &clusters, double prot_stringency);
+std::map<std::pair<int, int>, int> porthodomO2_assignments(const std::vector<protein_info_t> &g1,
+                                                           const std::vector<protein_info_t> &g2,
+                                                           const ProteinCollection &clusters, double prot_stringency);
 #endif

@@ -69,7 +69,7 @@ std::vector<GenomicNeighborhood> parse_neighborhoods(const std::string &neighbor
  *Writes the similarity between all genomic neighborhoods on the genome_sim_filename and,
  *optionally, the pairings made between their proteins on the pairings_filename.
  */
-void genome_clustering(std::vector<GenomicNeighborhood> &neighborhoods, ProteinCollection &clusters,
+void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, const ProteinCollection &clusters,
                        const std::string &method, double prot_stringency, double neigh_stringency, const std::string &genome_sim_filename,
                        const std::string &pairings_filename) {
 
@@ -89,7 +89,8 @@ void genome_clustering(std::vector<GenomicNeighborhood> &neighborhoods, ProteinC
         for(unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
                 //Edges chosen by the algorithm
-                assignments = porthodom_assignments(neighborhoods[m], neighborhoods[n], clusters, prot_stringency);
+                assignments = porthodom_assignments(neighborhoods[m].get_protein_vector(),
+                                                    neighborhoods[n].get_protein_vector(), clusters, prot_stringency);
 
                 //apply the scoring formula
                 score = porthodom_scoring(assignments,
@@ -109,7 +110,7 @@ void genome_clustering(std::vector<GenomicNeighborhood> &neighborhoods, ProteinC
     else if (method == "porthodomO2") {
         std::map<std::pair<int,int>, int> assignments;
         double score;
-        for(unsigned int m = 0; m < neighborhoods.size(); m++) {
+        for (unsigned int m = 0; m < neighborhoods.size(); m++) {
 
             if(neighborhoods[m].protein_count() == 1) continue; //Ignores neighborhoods with less than 2 proteins
 
@@ -118,7 +119,8 @@ void genome_clustering(std::vector<GenomicNeighborhood> &neighborhoods, ProteinC
                 if(neighborhoods[n].protein_count() == 1) continue; //Ignores neighborhoods with less than 2 proteins
 
                 //Edges chosen by the algorithm
-                assignments = porthodomO2_assignments(neighborhoods[m], neighborhoods[n], clusters, prot_stringency);
+                assignments = porthodomO2_assignments(neighborhoods[m].get_protein_vector(),
+                                                      neighborhoods[n].get_protein_vector(), clusters, prot_stringency);
 
                 //apply the scoring formula
                 score = porthodomO2_scoring(assignments,

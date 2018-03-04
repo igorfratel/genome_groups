@@ -66,7 +66,7 @@ bool ProteinCollection::are_connected(const std::string& node1, const std::strin
  * connected nodes or 0.0 otherwise.
  */
 double ProteinCollection::get_similarity(const std::string& node1,
-	 									 const std::string& node2) {
+	 									 const std::string& node2) const{
 
 	try{
 		auto x = nodes.at(node1).index;

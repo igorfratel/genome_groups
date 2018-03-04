@@ -28,7 +28,6 @@ class GenomicNeighborhood {
 
 
 	public:
-		typedef std::vector<protein_info_t>::iterator iterator;
 
 		GenomicNeighborhood (const std::string &acession_code);
 
@@ -39,27 +38,25 @@ class GenomicNeighborhood {
 		void add_protein(const std::string &locus, const std::string &pid, const std::string &cds);
 
 		/*Returns genomic neighborhood accession code*/
-		std::string get_accession();
+		std::string get_accession() const;
 
 		/*Returns anchor/seed proteins*/
-		std::vector<protein_info_t> get_seeds();
+		std::vector<protein_info_t> get_seeds() const;
 
 		/*Receives an index and returns the corresponding protein in the neighborhood sequence*/
-		std::string get_pid(int index);
+		std::string get_pid(int index) const;
+
+		/*returns a vector containing the proteins in order*/
+		std::vector<protein_info_t> get_protein_vector() const;
 
 		/*Returns number of proteins in the genomic neighborhood*/
-		int protein_count();
+		int protein_count() const;
 
 		/*Returns the first coordinate of the genomic neighborhood*/
-		int get_first_cds();
+		int get_first_cds() const;
 
 		/*Returns the last coordinate of the genomic neighborhood*/
-		int get_last_cds();
-
-		/*Iterator for protein_info_t types, in the order that they were inserted in the object*/
-		iterator begin();
-
-		iterator end();
+		int get_last_cds() const;
 };
 
 #endif

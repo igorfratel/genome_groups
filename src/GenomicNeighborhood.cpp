@@ -1,7 +1,5 @@
 #include "GenomicNeighborhood.h"
 
-typedef std::vector<protein_info_t>::iterator iterator;
-
 GenomicNeighborhood::GenomicNeighborhood (const std::string &accession_code) {
 	this->accession = accession_code;
 }
@@ -40,27 +38,29 @@ std::vector<int> GenomicNeighborhood::parse_cds(std::string cds) {
     return cds_array;
 }
 
-int GenomicNeighborhood::get_first_cds() {
+int GenomicNeighborhood::get_first_cds() const {
 	/*Returns the first coordinate of the genomic neighborhood*/
 	return proteins[0].cds_begin;
 }
 
-int GenomicNeighborhood::get_last_cds() {
+int GenomicNeighborhood::get_last_cds() const{
 	/*Returns the last coordinate of the genomic neighborhood*/
 	return proteins.back().cds_end;
 }
 
-std::string GenomicNeighborhood::get_pid(int index) {
+/*Receives an index and returns the corresponding protein in the neighborhood sequence*/
+std::string GenomicNeighborhood::get_pid(int index) const{
 	if ((unsigned int)index >= proteins.size()) return ".";
 	return proteins[index].pid;
 }
 
-std::string GenomicNeighborhood::get_accession() {return accession;}
+/*returns a vector containing the proteins in order*/
+std::vector<protein_info_t> GenomicNeighborhood::get_protein_vector() const{
+	return proteins;
+}
 
-std::vector<protein_info_t> GenomicNeighborhood::get_seeds() {return seeds;}
+std::string GenomicNeighborhood::get_accession() const{return accession;}
 
-int GenomicNeighborhood::protein_count() {return proteins.size();}
+std::vector<protein_info_t> GenomicNeighborhood::get_seeds() const{return seeds;}
 
-iterator GenomicNeighborhood::begin() {return proteins.begin();}
-
-iterator GenomicNeighborhood::end() {return proteins.end();}
+int GenomicNeighborhood::protein_count() const{return proteins.size();}

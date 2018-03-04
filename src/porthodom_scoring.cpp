@@ -3,7 +3,7 @@
 /**
  *Prints the score between two genomic neighborhoods in the standard format
  */
-void porthodom_output_score(GenomicNeighborhood &g1, GenomicNeighborhood &g2, double score, std::ofstream &output_file) {
+void porthodom_output_score(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2, double score, std::ofstream &output_file) {
     output_file << g1.get_accession() << "\t" <<
                    g1.get_first_cds() << "\t" <<
                    g1.get_last_cds() << "\t" <<
@@ -16,8 +16,8 @@ void porthodom_output_score(GenomicNeighborhood &g1, GenomicNeighborhood &g2, do
 /**
  *Prints the chosen protein assignments to the pairings_file
  */
-void porthodom_output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file) {
+void porthodom_output_pairings(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2,
+                            const std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file) {
 
     //Writes header
     pairings_file << ">" << g1.get_accession() << "\t" <<
@@ -28,7 +28,7 @@ void porthodom_output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
                             g2.get_last_cds() << "\n";
 
     //Writes pairings
-    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it){
+    for (std::map<std::pair<int, int>,int>::const_iterator it = assignments.begin(); it != assignments.end(); ++it){
         pairings_file << g1.get_pid(it->first.first) << "\t" <<
                          g2.get_pid(it->first.second) << "\t" <<
                          ((double)it->second)/1000000 << "\n";
@@ -41,7 +41,7 @@ void porthodom_output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
  *the Hungarian class only works with integers).
  *If the proteins aren't connected or if their similarity is smaller than the threshold value, return 0.
  */
-static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, ProteinCollection &clusters,
+static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, const ProteinCollection &clusters,
                             double stringency) {
   //DEBUG
   //std::cout << "clustering value between " << my_prot.pid << " and " << my_prot2.pid << " " << similarity << "\n";
@@ -54,38 +54,34 @@ static int clustering_value(protein_info_t my_prot, protein_info_t my_prot2, Pro
 }
 
 /**
- *Receives two genomic neighborhoods, g1 and g2, and the ProteinCollection.
+ *Receives two protein_info_t vectors, g1 and g2, and the ProteinCollection.
  *Fills an integer matrix where matrix[i][j] is the similarity measure between the i-th protein of g1 and
  *the j-th protein of g2 are in the same cluster (connected in the ProteinCollection) and 0 otherwise.
  */
-static std::vector<std::vector<int> > fill_assignment_matrix(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                                                     ProteinCollection &clusters, double stringency) {
+static std::vector<std::vector<int> > fill_assignment_matrix(const std::vector<protein_info_t> &g1,
+                                                            const std::vector<protein_info_t> &g2,
+                                                            const ProteinCollection &clusters, double stringency) {
 
-    int i = 0;
-    int j = 0;
-    std::vector<std::vector<int> > matrix(g1.protein_count(), std::vector<int>(g2.protein_count()));
+    std::vector<std::vector<int> > matrix(g1.size(), std::vector<int>(g2.size()));
 
-    for(GenomicNeighborhood::iterator it = g1.begin(); it != g1.end(); ++it) {
-        j = 0;
-        for(GenomicNeighborhood::iterator it2 = g2.begin(); it2 != g2.end(); ++it2) {
-
+    for(size_t i = 0; i < g1.size(); i++) {
+        for(size_t j = 0; j < g2.size(); j++) {
             //DEBUG
             /*std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << "\n";*/
-            matrix[i][j] = clustering_value(*it, *it2, clusters, stringency);
+            matrix[i][j] = clustering_value(g1[i], g2[j], clusters, stringency);
             //DEBUG
             //std::cout <<"matrix: " << i << " " << j << " " << it->pid << " " << it2->pid << " score = " << matrix[i][j]<<"\n";
-            j++;
         }
-        i++;
     }
     return matrix;
 }
 
-/*Receives two genomic neighborhoods and a ProteinCollection.
- *Returns the MWM porthodom protein assignments between the two neighborhoods
+/*Receives two protein_info_t vectors and a ProteinCollection.
+ *Returns the MWM porthodom protein assignments between the two neighborhoods (vectors)
  */
-std::map<std::pair<int, int>, int> porthodom_assignments(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                             ProteinCollection &clusters, double prot_stringency) {
+std::map<std::pair<int, int>, int> porthodom_assignments(const std::vector<protein_info_t> &g1,
+                             const std::vector<protein_info_t> &g2,
+                             const ProteinCollection &clusters, double prot_stringency) {
 
     //DEBUG
     /*std::cout <<"Comparing (" << g1.get_accession() << ") and "
@@ -104,9 +100,9 @@ std::map<std::pair<int, int>, int> porthodom_assignments(GenomicNeighborhood &g1
  *Returns the porthodom MWM score.
  */
 
-double porthodom_scoring(std::map<std::pair<int, int>, int> &assignments, int length) {
+double porthodom_scoring(const std::map<std::pair<int, int>, int> &assignments, int length) {
     double score = 0;
-    for (std::map<std::pair<int, int>,int>::iterator it = assignments.begin(); it != assignments.end(); ++it)
+    for (std::map<std::pair<int, int>,int>::const_iterator it = assignments.begin(); it != assignments.end(); ++it)
         score += ((double)it->second)/1000000; //Division to undo the multiplication in clustering_value()
 
     //apply the scoring formula

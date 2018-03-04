@@ -12,23 +12,24 @@
 /**
  *Prints the score between two genomic neighborhoods in the standard format
  */
-void porthodom_output_score(GenomicNeighborhood &g1, GenomicNeighborhood &g2, double score, std::ofstream &output_file);
+void porthodom_output_score(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2, double score, std::ofstream &output_file);
 
 /**
  *Prints the chosen protein assignments to the pairings_file
  */
-void porthodom_output_pairings(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                            std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
+void porthodom_output_pairings(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2,
+                            const std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
 
-/*Receives two genomic neighborhoods a ProteinCollection and the protein stringency.
+/*Receives two protein_info_t vectors a ProteinCollection and the protein stringency.
  *Returns the MWM porthodom protein assignments between the two neighborhoods
  */
-std::map<std::pair<int, int>, int> porthodom_assignments(GenomicNeighborhood &g1, GenomicNeighborhood &g2,
-                                                         ProteinCollection &clusters, double prot_stringency);
+std::map<std::pair<int, int>, int> porthodom_assignments(const std::vector<protein_info_t> &g1,
+                                                         const std::vector<protein_info_t> &g2,
+                                                         const ProteinCollection &clusters, double prot_stringency);
 
 /*Receives the porthodom assignments and a normalizing factor (length of the longest neighborhood).
  *Returns the porthodom MWM score.
  */
-double porthodom_scoring(std::map<std::pair<int, int>, int> &assignments, int length);
+double porthodom_scoring(const std::map<std::pair<int, int>, int> &assignments, int length);
 
 #endif
