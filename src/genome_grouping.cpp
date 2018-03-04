@@ -70,8 +70,8 @@ std::vector<GenomicNeighborhood> parse_neighborhoods(const std::string &neighbor
  *optionally, the pairings made between their proteins on the pairings_filename.
  */
 void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, const ProteinCollection &clusters,
-                       const std::string &method, double prot_stringency, double neigh_stringency, const std::string &genome_sim_filename,
-                       const std::string &pairings_filename) {
+                       const std::string &method, double prot_stringency, double neigh_stringency,
+                       const std::string &genome_sim_filename, const std::string &pairings_filename) {
 
     std::ofstream output_file;
     if(genome_sim_filename == "-")
@@ -86,8 +86,8 @@ void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, co
     if (method == "porthodom") {
         std::map<std::pair<int,int>, int> assignments;
         double score;
-        for(unsigned int m = 0; m < neighborhoods.size(); m++) {
-            for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
+        for(size_t m = 0; m < neighborhoods.size(); m++) {
+            for (size_t n = m + 1; n < neighborhoods.size(); n++) {
                 //Edges chosen by the algorithm
                 assignments = porthodom_assignments(neighborhoods[m].get_protein_vector(),
                                                     neighborhoods[n].get_protein_vector(), clusters, prot_stringency);
@@ -133,6 +133,31 @@ void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, co
                 if (pairings_filename == "&") continue; //Dummy filename indicating this option was not chosen
                 //Writes pairing to pairings_file
                 porthodomO2_output_pairings(neighborhoods[m], neighborhoods[n], assignments, pairings_file);
+            }
+        }
+    }
+
+    else if (method == "global_alignment") {
+        std::vector<std::vector<double> > assignments;
+        double score;
+        for (unsigned int m = 0; m < neighborhoods.size(); m++) {
+            for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
+
+                //dynamic programming matrix outputed by the alignment algorithm
+                assignments = global_alignment_assignments(neighborhoods[m].get_protein_vector(),
+                                                           neighborhoods[n].get_protein_vector(), clusters, prot_stringency);
+
+                //Retrieves the alignment score
+                score = assignments[neighborhoods[m].protein_count()][neighborhoods[n].protein_count()];
+
+                if (score < neigh_stringency) continue; //ignore scores below stringency
+                //Writes scores to output_file
+                global_alignment_output_score(neighborhoods[m], neighborhoods[n], score, output_file);
+
+                if (pairings_filename == "&") continue; //Dummy filename indicating this option was not chosen
+                //Retrieves alignment and writes pairings to pairings_file
+                global_alignment_output_pairings(neighborhoods[m], neighborhoods[n], clusters, assignments,
+                                                 prot_stringency, pairings_file);
             }
         }
     }

@@ -393,7 +393,7 @@ bool Hungarian::solve()
 		if (1)
 		{
 			//finish assignment, wrap up and done.
-			bool assign = assign_solution(row_dec, col_inc, col_vertex);
+			assign_solution(row_dec, col_inc, col_vertex);
 			return true;
 		}
 		else
@@ -416,13 +416,11 @@ bool Hungarian::solve()
 			fprintf(stderr, "Matched %d rows.\n",m-t);
 		}
 		q=0;
-		bool try_matching;
 		while (1)
 		{
 			while (q<t)
 			{
 			// Begin explore node q of the forest 19
-
 				k=unchosen_row[q];
 				s=row_dec[k];
 				for (l=0;l<n;l++)
@@ -545,7 +543,7 @@ bool Hungarian::solve()
 			if (checked)
 			{
 				//finish assignment, wrap up and done.
-				bool assign = assign_solution(row_dec, col_inc, col_vertex);
+				assign_solution(row_dec, col_inc, col_vertex);
 				return true;
 			}
 			else

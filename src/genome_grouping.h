@@ -8,6 +8,7 @@
 #include "ProteinCollection.h"
 #include "porthodom_scoring.h"
 #include "porthodomO2_scoring.h"
+#include "global_alignment.h"
 
 /**
  *Receives a vector of genomic neighborhoods,

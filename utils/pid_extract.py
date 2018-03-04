@@ -1,6 +1,6 @@
 import sys
 
-#Takes an input file and prints the pid of all proteins
+#Takes an input neighborhoods file and prints the pid of all proteins
 def parse_neighbourhood(filename):
 	with open(filename) as f:
 		for line in f:

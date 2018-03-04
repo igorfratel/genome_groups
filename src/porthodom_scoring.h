@@ -2,6 +2,7 @@
 #define __PORTHODOM_SCORING_H__
 
 #include <map>
+#include <vector>
 #include <string>
 #include <fstream>
 #include <algorithm>
@@ -18,10 +19,11 @@ void porthodom_output_score(const GenomicNeighborhood &g1, const GenomicNeighbor
  *Prints the chosen protein assignments to the pairings_file
  */
 void porthodom_output_pairings(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2,
-                            const std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
+                               const std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
 
-/*Receives two protein_info_t vectors a ProteinCollection and the protein stringency.
- *Returns the MWM porthodom protein assignments between the two neighborhoods
+/**
+ *Receives two protein_info_t vectors a ProteinCollection and the protein stringency.
+ *Returns the MWM porthodom protein assignments between the two neighborhoods (vectors).
  */
 std::map<std::pair<int, int>, int> porthodom_assignments(const std::vector<protein_info_t> &g1,
                                                          const std::vector<protein_info_t> &g2,

@@ -19,7 +19,7 @@ void porthodomO2_output_score(const GenomicNeighborhood &g1, const GenomicNeighb
  *Prints the chosen protein assignments to the pairings_file (treats each assignment as a pair of pairs of proteins)
  */
 void porthodomO2_output_pairings(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2,
-                            const std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
+                                 const std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
 
 /**
  *Receives the porthodom assignments and a normalizing factor (length of the longest neighborhood).
@@ -29,7 +29,7 @@ double porthodomO2_scoring(const std::map<std::pair<int, int>, int> &assignments
 
 /**
  *Receives two protein_info_t vectors, a ProteinCollection and the protein stringency.
- *Returns the MWM porthodom  O2 protein assignments between the two neighborhoods
+ *Returns the MWM porthodom  O2 protein assignments between the two neighborhoods (vectors).
  */
 std::map<std::pair<int, int>, int> porthodomO2_assignments(const std::vector<protein_info_t> &g1,
                                                            const std::vector<protein_info_t> &g2,

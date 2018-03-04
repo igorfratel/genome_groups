@@ -92,7 +92,8 @@ int main(int argc, char *argv[]) {
 		std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
+		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output,
+			 	          pairings_filename);
 
 		std::cout << "\nDone!";
 	}
@@ -112,7 +113,8 @@ int main(int argc, char *argv[]) {
 		std::vector<GenomicNeighborhood> neighborhoods = parse_neighborhoods(neighborhoods_filename);
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
-		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output, pairings_filename);
+		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output,
+			              pairings_filename);
 
 		std::cout << "\nDone!\n";
 

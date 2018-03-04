@@ -18,7 +18,8 @@ def parse_neighbourhood(filename, blast_file):
 
 
 def main():
-	#argv[1] <--- file name
+	#argv[1] <--- neighborhoods file name
+	#argv[1] <--- blast file name
 	parse_neighbourhood(sys.argv[1], sys.argv[2])
 
 main();
