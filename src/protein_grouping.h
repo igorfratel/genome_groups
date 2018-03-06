@@ -13,12 +13,14 @@
  */
 int total_protein_count(const std::string &prot_sim_filename);
 
+
 /**
  *Receives the user's preferred protein homology/orthology detection method and runs it on a file
- *already formatted to be its input.
+ *already formatted to be its input (that has the number of residues in its unique protein set equal to num_residues).
  *Writes the results to prot_sim_filename.
  */
-void homology_detection(const std::string &format_file, const std::string &method, const std::string &prot_sim_filename);
+void homology_detection(const std::string &format_file, const std::string &method, const std::string &num_residues,
+                        const std::string &prot_sim_filename);
 
 /**
  *Receives the protein similarities file and the number of unique proteins.
