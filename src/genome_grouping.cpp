@@ -65,14 +65,15 @@ std::vector<GenomicNeighborhood> parse_neighborhoods(const std::string &neighbor
 
  /**
   *Receives a vector of genomic neighborhoods,
-  *a ProteinCollection, the desired genomic neighborhood clustering method, and a
-  *gap score value (for when an alignment method is chosen).
+  *a ProteinCollection, the desired genomic neighborhood clustering method, a
+  *gap score value (for when an alignment method is chosen) and a mismatch value.
   *Writes the similarity between all genomic neighborhoods on the genome_sim_filename and,
   *optionally, the pairings made between their proteins on the pairings_filename.
   */
 void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, const ProteinCollection &clusters,
                        const std::string &method, double prot_stringency, double neigh_stringency,
-                       const std::string &genome_sim_filename, const std::string &pairings_filename, const int gap_score) {
+                       const std::string &genome_sim_filename, const std::string &pairings_filename, const int gap_score,
+                       const int mismatch) {
 
     std::ofstream output_file;
     if(genome_sim_filename == "-")
@@ -91,7 +92,8 @@ void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, co
             for (size_t n = m + 1; n < neighborhoods.size(); n++) {
                 //Edges chosen by the algorithm
                 assignments = porthodom_assignments(neighborhoods[m].get_protein_vector(),
-                                                    neighborhoods[n].get_protein_vector(), clusters, prot_stringency);
+                                                    neighborhoods[n].get_protein_vector(), clusters, prot_stringency,
+                                                    mismatch);
 
                 //apply the scoring formula
                 score = porthodom_scoring(assignments,
@@ -121,7 +123,8 @@ void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, co
 
                 //Edges chosen by the algorithm
                 assignments = porthodomO2_assignments(neighborhoods[m].get_protein_vector(),
-                                                      neighborhoods[n].get_protein_vector(), clusters, prot_stringency);
+                                                      neighborhoods[n].get_protein_vector(), clusters, prot_stringency,
+                                                      mismatch);
 
                 //apply the scoring formula
                 score = porthodomO2_scoring(assignments,
@@ -146,7 +149,8 @@ void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, co
 
                 //dynamic programming matrix outputed by the alignment algorithm
                 assignments = global_alignment_assignments(neighborhoods[m].get_protein_vector(),
-                                                           neighborhoods[n].get_protein_vector(), clusters, prot_stringency, gap_score);
+                                                           neighborhoods[n].get_protein_vector(), clusters, prot_stringency,
+                                                           gap_score, mismatch);
 
                 //Retrieves the alignment score
                 score = assignments[neighborhoods[m].protein_count()][neighborhoods[n].protein_count()];
@@ -158,7 +162,7 @@ void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, co
                 if (pairings_filename == "&") continue; //Dummy filename indicating this option was not chosen
                 //Retrieves alignment and writes pairings to pairings_file
                 global_alignment_output_pairings(neighborhoods[m], neighborhoods[n], clusters, assignments,
-                                                 prot_stringency, pairings_file, gap_score);
+                                                 prot_stringency, pairings_file, gap_score, mismatch);
             }
         }
     }

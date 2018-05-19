@@ -1,29 +1,28 @@
 #include "global_alignment.h"
 
 /**
- *Receives two proteins, a ProteinCollection and a threshold value.
+ *Receives two proteins, a ProteinCollection, a threshold value and the mismatch value.
  *If the proteins are connected in the ProteinCollection, returns their similarity
- *If the proteins aren't connected or if their similarity is smaller than the threshold value, return 0.
+ *If the proteins aren't connected or if their similarity is smaller than the threshold value, return mismatch.
  */
 static double clustering_value(protein_info_t my_prot, protein_info_t my_prot2, const ProteinCollection &clusters,
-                               double stringency) {
+                               double stringency, const int mismatch) {
 
+  if (!clusters.are_connected(my_prot.pid, my_prot2.pid)) return (double)mismatch;
   double similarity = clusters.get_similarity(my_prot.pid, my_prot2.pid);
-  if (similarity >= stringency)
-    return similarity;
-  else
-    return 0;
-
+  if (similarity >= stringency) return similarity;
+  return (double)mismatch;
 }
 
 /**
- *Receives two protein_info_t vectors, a ProteinCollection and the protein stringency.
+ *Receives two protein_info_t vectors, a ProteinCollection, the protein stringency, gap score and mismatch value.
  *Computes the global similarity (Needleman-Wunsch algorithm) between the sequences (vectors) using dynamic programming.
  *Returns the dynamic programming matrix.
  */
 static std::vector<std::vector<double> > compute_sim (const std::vector<protein_info_t> &seq_1,
                                                       const std::vector<protein_info_t> &seq_2,
-                                                      const ProteinCollection &clusters, double stringency, const int gap_score) {
+                                                      const ProteinCollection &clusters, double stringency,
+                                                      const int gap_score, const int mismatch) {
 
     double match;
     double options[3];
@@ -35,7 +34,7 @@ static std::vector<std::vector<double> > compute_sim (const std::vector<protein_
         dyn_matrix[0][i] = (double)i * gap_score;
     for (size_t i = 1; i <= seq_1.size(); i++) {
         for (size_t j = 1; j <= seq_2.size(); j++) {
-            match = clustering_value(seq_1[i-1], seq_2[j-1], clusters, stringency);
+            match = clustering_value(seq_1[i-1], seq_2[j-1], clusters, stringency, mismatch);
             options[0] = dyn_matrix[i-1][j] + (double)gap_score;
             options[1] = dyn_matrix[i-1][j-1] + match;
             options[2] = dyn_matrix[i][j-1] + (double)gap_score;
@@ -50,32 +49,33 @@ static std::vector<std::vector<double> > compute_sim (const std::vector<protein_
  *Receives the dynamic programming matrix,
  *two integers (the sizes of the first and second sequences),
  *an int len = 0, two string vectors where the aligned sequences will be
- *stored, the two sequences to be aligned (protein_info_t vectors), a ProteinCollection, the protein stringency
- *and the gap score.
+ *stored, the two sequences to be aligned (protein_info_t vectors), a ProteinCollection, the protein stringency,
+ *the gap score and a mismatch value.
  *Recovers the upmost optimal alignment between the two sequences and stores it in align_1 and align_2.
  */
 static void align(const std::vector<std::vector<double> > &dyn_matrix, int i, int j, int len, std::vector<std::string> &align_1,
                   std::vector<std::string> &align_2,  const std::vector<protein_info_t> &seq_1,
-                  const std::vector<protein_info_t> &seq_2, const ProteinCollection &clusters, double stringency, const int gap_score) {
+                  const std::vector<protein_info_t> &seq_2, const ProteinCollection &clusters, double stringency,
+                  const int gap_score, const int mismatch) {
 
     if (i == 0 && j == 0)
         len = 0;
 
     else if (i > 0 && dyn_matrix[i][j] == dyn_matrix[i-1][j] + gap_score) {
-        align(dyn_matrix, i - 1, j, len, align_1, align_2, seq_1, seq_2, clusters, stringency, gap_score);
+        align(dyn_matrix, i - 1, j, len, align_1, align_2, seq_1, seq_2, clusters, stringency, gap_score, mismatch);
         len++;
         align_1.push_back(seq_1[i-1].pid);
         align_2.push_back("-");
     }
     else if (i > 0 && j > 0 && dyn_matrix[i][j] == dyn_matrix[i-1][j-1] +
-             clustering_value(seq_1[i-1], seq_2[j-1], clusters, stringency)) {
-        align(dyn_matrix, i - 1, j - 1, len, align_1, align_2, seq_1, seq_2, clusters, stringency, gap_score);
+             clustering_value(seq_1[i-1], seq_2[j-1], clusters, stringency, mismatch)) {
+        align(dyn_matrix, i - 1, j - 1, len, align_1, align_2, seq_1, seq_2, clusters, stringency, gap_score, mismatch);
         len++;
         align_1.push_back(seq_1[i-1].pid);
         align_2.push_back(seq_2[j-1].pid);
     }
     else {
-        align(dyn_matrix, i, j - 1, len, align_1, align_2, seq_1, seq_2, clusters, stringency, gap_score);
+        align(dyn_matrix, i, j - 1, len, align_1, align_2, seq_1, seq_2, clusters, stringency, gap_score, mismatch);
         len++;
         align_1.push_back("-");
         align_2.push_back(seq_2[j-1].pid);
@@ -88,8 +88,8 @@ static void align(const std::vector<std::vector<double> > &dyn_matrix, int i, in
 std::vector<std::vector<double> > global_alignment_assignments(const std::vector<protein_info_t> &g1,
                                                                const std::vector<protein_info_t> &g2,
                                                                const ProteinCollection &clusters, double prot_stringency,
-                                                               const int gap_score) {
-    return compute_sim(g1, g2, clusters, prot_stringency, gap_score);
+                                                               const int gap_score, const int mismatch) {
+    return compute_sim(g1, g2, clusters, prot_stringency, gap_score, mismatch);
 }
 
 
@@ -113,11 +113,11 @@ void global_alignment_output_score(const GenomicNeighborhood &g1, const GenomicN
  */
 void global_alignment_output_pairings(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2,
                                       const ProteinCollection &clusters, const std::vector<std::vector<double> > &assignments,
-                                      double stringency, std::ofstream &pairings_file, const int gap_score) {
+                                      double stringency, std::ofstream &pairings_file, const int gap_score, const int mismatch) {
 
     std::vector<std::string> align_1, align_2;
     align(assignments, g1.protein_count(), g2.protein_count(), 0, align_1, align_2, g1.get_protein_vector(),
-          g2.get_protein_vector(), clusters, stringency, gap_score);
+          g2.get_protein_vector(), clusters, stringency, gap_score, mismatch);
 
     //Writes header
     pairings_file << ">" << g1.get_accession() << "\t" <<

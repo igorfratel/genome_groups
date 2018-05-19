@@ -5,8 +5,9 @@ an additional information.
 
 ## How to run:  
 
-- 1: ./make  
-- 2: ./neighborhood_comparer <full or partial> <args according to chosen mode>  
+- 1: Go to /src folder
+- 2: ./make  
+- 3: ./neighborhood_comparer <full or partial> <args according to chosen mode>  
 
 
 ## Command line options
@@ -20,8 +21,9 @@ full --> default execution
     -d --num_residues  "Total number of residues in unique protein set of formatted_prot_filename. Used in the nc method. Defaults to 537, which is the default for the NC_Standalone program."  
     -t --prot_stringency  "Minimum similarity required to treat two proteins as a related pair (default 0)"  
     -r --neigh_stringency  "Minimum threshold to display the similarity between two neighborhoods (default 0)"  
+    -m --mismatch  "Similarity value used when protein pair similarity is below prot_stringency (default -1)"
     -g --neigh_comparing  "Method for comparing genomic neighborhoods (default: porthodom method)"  
-    -G --gap_score  "Value added to similarity when a gap is chosen. Used when the neigh_comparing option is an alignment algorithm"  
+    -G --gap_score  "Value added to similarity when a gap is chosen. Used when the neigh_comparing option is an alignment algorithm (default 0)"  
     -o --output  "Where the neighborhood similarities should be written (outputs to stdout if the filename is - or if not used)"  
     -a --pairings_filename  "Where the chosen pairings between proteins in the neighborhoods should be written (if not specified, does not generate a pairings file)"  
 
@@ -33,6 +35,7 @@ partial --> Already has the similarities between the proteins.
     -l --normalize_prot_sim" "Indicates that the protein similarities file should be normalized"  
     -t --prot_stringency  
     -r --neigh_stringency  
+    -m --mismatch
     -g --neigh_comparing  
     -G --gap_score  
     -o --output  

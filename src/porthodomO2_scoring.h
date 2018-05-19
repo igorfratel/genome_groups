@@ -28,10 +28,11 @@ void porthodomO2_output_pairings(const GenomicNeighborhood &g1, const GenomicNei
 double porthodomO2_scoring(const std::map<std::pair<int, int>, int> &assignments, int length);
 
 /**
- *Receives two protein_info_t vectors, a ProteinCollection and the protein stringency.
+ *Receives two protein_info_t vectors, a ProteinCollection, the protein stringency and a mismatch value.
  *Returns the MWM porthodom  O2 protein assignments between the two neighborhoods (vectors).
  */
 std::map<std::pair<int, int>, int> porthodomO2_assignments(const std::vector<protein_info_t> &g1,
                                                            const std::vector<protein_info_t> &g2,
-                                                           const ProteinCollection &clusters, double prot_stringency);
+                                                           const ProteinCollection &clusters, double prot_stringency,
+                                                           const int mismatch);
 #endif

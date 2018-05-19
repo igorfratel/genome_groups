@@ -22,12 +22,13 @@ void porthodom_output_pairings(const GenomicNeighborhood &g1, const GenomicNeigh
                                const std::map<std::pair<int, int>,int> &assignments, std::ofstream &pairings_file);
 
 /**
- *Receives two protein_info_t vectors a ProteinCollection and the protein stringency.
+ *Receives two protein_info_t vectors a ProteinCollection, the protein stringency and a mismatch value.
  *Returns the MWM porthodom protein assignments between the two neighborhoods (vectors).
  */
 std::map<std::pair<int, int>, int> porthodom_assignments(const std::vector<protein_info_t> &g1,
                                                          const std::vector<protein_info_t> &g2,
-                                                         const ProteinCollection &clusters, double prot_stringency);
+                                                         const ProteinCollection &clusters, double prot_stringency,
+                                                         const int mismatch);
 
 /*Receives the porthodom assignments and a normalizing factor (length of the longest neighborhood).
  *Returns the porthodom MWM score.

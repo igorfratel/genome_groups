@@ -44,7 +44,7 @@ class ProteinCollection {
 		/*
 		 *Returns true if given proteins are directly connected and false otherwise.
 		 */
-		bool are_connected(const std::string& node1, const std::string& node2);
+		bool are_connected(const std::string& node1, const std::string& node2) const;
 
 		/**
 		 *Returns similarity value between two existing and directly connected proteins.

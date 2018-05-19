@@ -34,7 +34,7 @@ void ProteinCollection::connect_proteins(const std::string& node1, const std::st
 /**
  *Returns true if given nodes are directly connected and false otherwise.
  */
-bool ProteinCollection::are_connected(const std::string& node1, const std::string& node2) {
+bool ProteinCollection::are_connected(const std::string& node1, const std::string& node2) const{
 
 	try{
     	auto x = nodes.at(node1).index;
@@ -50,8 +50,7 @@ bool ProteinCollection::are_connected(const std::string& node1, const std::strin
  *Returns weight of the edge connecting two existing and directly
  *connected nodes or 0.0 otherwise.
  */
-double ProteinCollection::get_similarity(const std::string& node1,
-	 									 const std::string& node2) const{
+double ProteinCollection::get_similarity(const std::string& node1, const std::string& node2) const{
 
 	try{
 		auto x = nodes.at(node1).index;
