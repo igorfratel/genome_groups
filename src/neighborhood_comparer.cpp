@@ -24,6 +24,7 @@ int main(int argc, char *argv[]) {
 		("t,prot_stringency", "Minimum similarity required to treat two proteins as a related pair", cxxopts::value<double>()->default_value("0.0"))
 		("r,neigh_stringency", "Minimum threshold to display the similarity between two neighborhoods", cxxopts::value<double>()->default_value("0.0"))
 		("g,neigh_comparing","Method for comparing genomic neighborhoods (default: porthodom method)", cxxopts::value<std::string>()->default_value("porthodom"))
+		("G,gap_score", "Value added to similarity when a gap is chosen. Used when the neigh_comparing option is an alignment algorithm", cxxopts::value<int>()->default_value("-1"))
 		("o,output", "Where the neighborhood similarities should be written", cxxopts::value<std::string>()->default_value("-"))
 		("a,pairings_filename", "Where the chosen pairings between proteins in the neighborhoods should be written", cxxopts::value<std::string>()->default_value("&"))
 		;
@@ -39,28 +40,29 @@ int main(int argc, char *argv[]) {
 
 				<<"ARGUMENTS FOR EACH EXECUTION MODE:\n"
 				<<"  full --> default execution\n"
-		    	<<"    -e --execution_mode full\n"
-			    <<"    -n --neighborhoods_filename\n"
-			    <<"    -s --prot_sim_filename\n"
-			    <<"    -f --formatted_prot_filename\n"
-			    <<"    -p --protein_comparing\n"
+			    	<<"    -e --execution_mode full\n"
+				<<"    -n --neighborhoods_filename\n"
+		   		<<"    -s --prot_sim_filename\n"
+			    	<<"    -f --formatted_prot_filename\n"
+			    	<<"    -p --protein_comparing\n"
 				<<"    -d --num_residues\n"
-			    <<"    -t --prot_stringency\n"
+			    	<<"    -t --prot_stringency\n"
 				<<"    -r --neigh_stringency\n"
-			    <<"    -g --neigh_comparing\n"
-			    <<"    -o --output\n"
+			    	<<"    -g --neigh_comparing\n"
+				<<"    -G --gap_score\n"
+			    	<<"    -o --output\n"
 				<<"    -a --pairings_filename\n"
-
 				<<"  partial --> Already has the similarities between the proteins.\n"
-			    <<"    -e --execution_mode partial\n"
-			    <<"    -n --neighborhoods_filename\n"
-			    <<"    -s --prot_sim_filename\n"
+			    	<<"    -e --execution_mode partial\n"
+			    	<<"    -n --neighborhoods_filename\n"
+			    	<<"    -s --prot_sim_filename\n"
 				<<"    -l --normalize_prot_sim\n"
-			    <<"    -t --prot_stringency\n"
+			    	<<"    -t --prot_stringency\n"
 				<<"    -r --neigh_stringency\n"
-			    <<"    -g --neigh_comparing\n"
-			    <<"    -o --output\n"
-				<<"-a --pairings_filename\n";
+			    	<<"    -g --neigh_comparing\n"
+				<<"    -G --gap_score\n"
+			    	<<"    -o --output\n"
+				<<"    -a --pairings_filename\n";
 
 		return 0;
 	}
@@ -75,6 +77,8 @@ int main(int argc, char *argv[]) {
 	std::string neigh_comparing = result["neigh_comparing"].as<std::string>();
 	std::string output = result["output"].as<std::string>() ;
 	std::string pairings_filename = result["pairings_filename"].as<std::string>();
+
+	int gap_score = result["gap_score"].as<int>();
 
 	ProteinCollection prot_clusters;
 	int num_prot;
@@ -97,7 +101,7 @@ int main(int argc, char *argv[]) {
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
 		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output,
-			 	          pairings_filename);
+			 	          pairings_filename, gap_score);
 
 		std::cout << "\nDone!";
 	}
@@ -118,7 +122,7 @@ int main(int argc, char *argv[]) {
 
 		std::cout << "\nClustering genomic neighborhoods...\n";
 		genome_clustering(neighborhoods, prot_clusters, neigh_comparing, prot_stringency, neigh_stringency, output,
-			              pairings_filename);
+			              pairings_filename, gap_score);
 
 		std::cout << "\nDone!\n";
 

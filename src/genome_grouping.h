@@ -12,13 +12,14 @@
 
 /**
  *Receives a vector of genomic neighborhoods,
- *a ProteinCollection and the desired genomic neighborhood clustering method.
+ *a ProteinCollection, the desired genomic neighborhood clustering method, and a
+ *gap score value (for when an alignment method is chosen).
  *Writes the similarity between all genomic neighborhoods on the genome_sim_filename and,
  *optionally, the pairings made between their proteins on the pairings_filename.
  */
  void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, const ProteinCollection &clusters,
                         const std::string &method, double prot_stringency, double neigh_stringency, const std::string &genome_sim_filename,
-                        const std::string &pairings_filename);
+                        const std::string &pairings_filename, const int gap_score);
 
 /**
  *Receives a genomic neighborhood filename
