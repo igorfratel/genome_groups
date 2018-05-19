@@ -21,20 +21,22 @@ full --> default execution
     -t --prot_stringency  "Minimum similarity required to treat two proteins as a related pair (default 0)"  
     -r --neigh_stringency  "Minimum threshold to display the similarity between two neighborhoods (default 0)"  
     -g --neigh_comparing  "Method for comparing genomic neighborhoods (default: porthodom method)"  
-    -o --output  "Where the neighborhood similarities should be written (outputs to stdout if the filename is - or if not used)"
+    -G --gap_score  "Value added to similarity when a gap is chosen. Used when the neigh_comparing option is an alignment algorithm"  
+    -o --output  "Where the neighborhood similarities should be written (outputs to stdout if the filename is - or if not used)"  
     -a --pairings_filename  "Where the chosen pairings between proteins in the neighborhoods should be written (if not specified, does not generate a pairings file)"  
 
 
 partial --> Already has the similarities between the proteins.  
-    -e --execution_mode partial  
-    -n --neighborhoods_filename  
-    -s --prot_sim_filename  
-    -l --normalize_prot_sim" "Indicates that the protein similarities file should be normalized"
+    -e --execution_mode partial    
+    -n --neighborhoods_filename    
+    -s --prot_sim_filename    
+    -l --normalize_prot_sim" "Indicates that the protein similarities file should be normalized"  
     -t --prot_stringency  
-    -r --neigh_stringency
+    -r --neigh_stringency  
     -g --neigh_comparing  
+    -G --gap_score  
     -o --output  
-    -a --pairings_filename
+    -a --pairings_filename  
 
 Help option: -h --help  
 ```
