@@ -48,7 +48,7 @@ Help option: -h --help
 
 * neighborhood scoring methods: porthodom, porthodomO2, global_alignment.
 
-* prot_sim_filename format: "prot1 prot2 score" <-- whitespaces!
+* prot_sim_filename format: "prot1 prot2 score" <-- tabs or whitespaces (nc uses whitespaces)
 
 * Output format: "accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2    score" <-- tabs
 

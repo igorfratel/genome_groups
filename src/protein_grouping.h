@@ -7,6 +7,7 @@
 #include <set>
 #include <vector>
 #include "ProteinCollection.h"
+#include "utils.h"
 
 /**
  *Receives the protein similarities file and returns the number of unique proteins in it.

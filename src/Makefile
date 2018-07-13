@@ -4,10 +4,13 @@ LDFLAGS := -g
 
 all: neighborhood_comparer
 
-neighborhood_comparer: neighborhood_comparer.o ProteinCollection.o GenomicNeighborhood.o Hungarian.o\
+neighborhood_comparer: utils.o neighborhood_comparer.o ProteinCollection.o GenomicNeighborhood.o Hungarian.o\
 	 			 protein_grouping.o porthodom_scoring.o porthodomO2_scoring.o global_alignment.o genome_grouping.o
 	$(CXX) $^ -o $@ $(LDFLAGS)
 
+utils.o: utils.cpp utils.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+	
 protein_grouping.o: protein_grouping.cpp protein_grouping.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 

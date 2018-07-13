@@ -7,6 +7,7 @@ int total_protein_count(const std::string &prot_sim_filename) {
     std::set<std::string> protein_set;
     std::ifstream file;
     std::string prot;
+    std::string test_string;
 
     file.open(prot_sim_filename.c_str());
 
@@ -15,12 +16,31 @@ int total_protein_count(const std::string &prot_sim_filename) {
         exit(1);
     }
 
-    while(std::getline(file, prot, ' ')) {
-        protein_set.emplace(prot);
-        std::getline(file, prot, ' ');
-        protein_set.emplace(prot);
-        std::getline(file, prot); //similarity is ignored
+    std::getline(file, test_string);
+    if(test_string.find_first_of(' ') != std::string::npos) {
+        std::vector<std::string> splitted = split(test_string, " ");
+        protein_set.emplace(splitted[0]);
+        protein_set.emplace(splitted[1]);
+        while(std::getline(file, prot, ' ')) {
+            protein_set.emplace(prot);
+            std::getline(file, prot, ' ');
+            protein_set.emplace(prot);
+            std::getline(file, prot); //similarity is ignored
+        }
     }
+
+    else {
+        std::vector<std::string> splitted = split(test_string, "\t");
+        protein_set.emplace(splitted[0]);
+        protein_set.emplace(splitted[1]);
+        while(std::getline(file, prot, '\t')) {
+            protein_set.emplace(prot);
+            std::getline(file, prot, '\t');
+            protein_set.emplace(prot);
+            std::getline(file, prot); //similarity is ignored
+        }
+    }
+    
     file.close();
     return protein_set.size();
 }
@@ -51,6 +71,7 @@ ProteinCollection protein_clustering(const std::string &prot_sim_filename, unsig
     std::string prot1;
     std::string prot2;
     std::string similarity;
+    std::string test_string;
 
     file.open(prot_sim_filename.c_str());
     if (file.fail()) {
@@ -58,12 +79,39 @@ ProteinCollection protein_clustering(const std::string &prot_sim_filename, unsig
         exit(1);
     }
 
-    while(std::getline(file, prot1, ' ')) {
-        std::getline(file, prot2, ' ');
-        std::getline(file, similarity);
+    std::getline(file, test_string);
+    if(test_string.find_first_of(' ') != std::string::npos) {
+        std::vector<std::string> splitted = split(test_string, " ");
+        prot1 = splitted[0];
+        prot2 = splitted[1];
+        similarity = splitted[2];
         my_proteins.add_protein(prot1);
         my_proteins.add_protein(prot2);
         my_proteins.connect_proteins(prot1, prot2, std::stod(similarity));
+        while(std::getline(file, prot1, ' ')) {
+            std::getline(file, prot2, ' ');
+            std::getline(file, similarity);
+            my_proteins.add_protein(prot1);
+            my_proteins.add_protein(prot2);
+            my_proteins.connect_proteins(prot1, prot2, std::stod(similarity));
+        }
+    }
+
+    else {
+        std::vector<std::string> splitted = split(test_string, "\t");
+        prot1 = splitted[0];
+        prot2 = splitted[1];
+        similarity = splitted[2];
+        my_proteins.add_protein(prot1);
+        my_proteins.add_protein(prot2);
+        my_proteins.connect_proteins(prot1, prot2, std::stod(similarity));
+        while(std::getline(file, prot1, '\t')) {
+            std::getline(file, prot2, '\t');
+            std::getline(file, similarity);
+            my_proteins.add_protein(prot1);
+            my_proteins.add_protein(prot2);
+            my_proteins.connect_proteins(prot1, prot2, std::stod(similarity));
+        }
     }
     file.close();
     return my_proteins;
