@@ -50,8 +50,8 @@ Help option: -h --help
 
 * prot_sim_filename format: "prot1 prot2 score" <-- tabs or whitespaces (nc uses whitespaces)
 
-* Output format: "accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2    score" <-- tabs
-    If the neigh_comparing option is set to global_alignment, this file will have an additional last column consisting
+* Output format: "accession1    cds_begin1    cds_end1    accession2    cds_begin2    cds_end2    score" <-- tabs  
+    Note: If the neigh_comparing option is set to global_alignment, this file will have an additional last column consisting
     of a "+" if the highest scoring alignment is the regular one or a "-" if the highest scoring alignment was reached
     inverting the order of the second neighborhood.
 
