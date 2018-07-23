@@ -44,7 +44,6 @@ int total_protein_count(const std::string &prot_sim_filename) {
     file.close();
     return protein_set.size();
 }
-
 /**
  *Receives the user's preferred protein homology/orthology detection method and runs it on a file
  *already formatted to be its input (that has the number of residues in its unique protein set equal to num_residues).

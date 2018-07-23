@@ -120,8 +120,13 @@ void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, co
         }
     }
 
+    /**
+     * Does the regular global alignment but also tries reversing the second neighborhood being aligned.
+     * The reported alignment score and assignment will be the highest scoring one between these two options.
+     */
     else if (method == "global_alignment") {
         std::vector<std::vector<double> > assignments;
+        std::vector<std::vector<double> > assignments_reverse;
         double score;
         for (unsigned int m = 0; m < neighborhoods.size(); m++) {
             for (unsigned int n = m + 1; n < neighborhoods.size(); n++) {
@@ -131,12 +136,23 @@ void genome_clustering(const std::vector<GenomicNeighborhood> &neighborhoods, co
                                                            neighborhoods[n].get_protein_vector(), clusters, prot_stringency,
                                                            gap_score, mismatch);
 
+                assignments_reverse = global_alignment_assignments(neighborhoods[m].get_protein_vector(),
+                                                           neighborhoods[n].get_reverse_protein_vector(), clusters, prot_stringency,
+                                                           gap_score, mismatch);
+
                 //Retrieves the alignment score
-                score = assignments[neighborhoods[m].protein_count()][neighborhoods[n].protein_count()];
+                score = std::max(assignments[neighborhoods[m].protein_count()][neighborhoods[n].protein_count()], 
+                                 assignments_reverse[neighborhoods[m].protein_count()][neighborhoods[n].protein_count()]);
+                
+                bool reverse = false;
+                if(score >  assignments[neighborhoods[m].protein_count()][neighborhoods[n].protein_count()]){
+                    reverse = true;
+                    assignments = assignments_reverse;
+                }
 
                 if (score < neigh_stringency) continue; //ignore scores below stringency
                 //Writes scores to output_file
-                global_alignment_output_score(neighborhoods[m], neighborhoods[n], score, output_file);
+                global_alignment_output_score(neighborhoods[m], neighborhoods[n], score, output_file, reverse);
 
                 if (pairings_filename == "&") continue; //Dummy filename indicating this option was not chosen
                 //Retrieves alignment and writes pairings to pairings_file

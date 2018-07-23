@@ -63,6 +63,12 @@ class GenomicNeighborhood {
 		 */
 		std::vector<protein_info_t> get_protein_vector() const;
 
+    	/**
+		 *Returns a vector containing the proteins in reverse order
+		 */
+		std::vector<protein_info_t> get_reverse_protein_vector() const;
+
+
 		/**
 		 *Returns number of proteins in the genomic neighborhood
 		 */

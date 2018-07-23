@@ -19,7 +19,7 @@ std::vector<std::vector<double> > global_alignment_assignments(const std::vector
  *Prints the score between two genomic neighborhoods in the standard format.
  */
 void global_alignment_output_score(const GenomicNeighborhood &g1, const GenomicNeighborhood &g2,
-                                   double score, std::ofstream &output_file);
+                                   double score, std::ofstream &output_file, bool reverse);
 
 /**
  *Prints the aligned proteins.

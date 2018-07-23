@@ -73,6 +73,16 @@ std::vector<protein_info_t> GenomicNeighborhood::get_protein_vector() const{
 	return proteins;
 }
 
+/**
+ *Returns a vector containing the proteins in reverse order
+ */
+std::vector<protein_info_t> GenomicNeighborhood::get_reverse_protein_vector() const{
+    std::vector<protein_info_t> reverse_proteins = proteins;
+    std::reverse(reverse_proteins.begin(), reverse_proteins.end());
+	return reverse_proteins;
+}
+
+
 std::string GenomicNeighborhood::get_accession() const{return accession;}
 
 std::vector<protein_info_t> GenomicNeighborhood::get_seeds() const{return seeds;}
